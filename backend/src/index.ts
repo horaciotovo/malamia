@@ -60,10 +60,11 @@ app.use(cors({
     }
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  exposedHeaders: ['Content-Range', 'X-Content-Range'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range', 'Content-Type'],
   credentials: true,
   maxAge: 86400,
+  optionsSuccessStatus: 200,  // For old browsers that return 204 on OPTIONS
 }));
 
 // ─── Additional CORS Headers for multipart uploads ─
@@ -156,8 +157,10 @@ app.get('/health', (_req, res) => {
 app.use(errorHandler);
 
 // ─── Server startup ─────────────────────────
-app.listen(PORT, () => {
-  console.log(`🌸 Malamia API running on http://localhost:${PORT}`);
+const numPort = typeof PORT === 'string' ? parseInt(PORT) : PORT;
+app.listen(numPort, '0.0.0.0', () => {
+  console.log(`🌸 Malamia API running on http://localhost:${numPort}`);
+  console.log(`   Also accessible at http://127.0.0.1:${numPort}`);
 });
 
 export default app;
