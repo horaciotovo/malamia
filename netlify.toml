@@ -1,6 +1,6 @@
 [build]
   base = "mobile"
-  command = "npm install && npm run build"
+  command = "npm install && npm run build && node postbuild.js"
   publish = "dist"
 
 [[redirects]]
