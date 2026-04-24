@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -25,10 +26,16 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, onPress, onAddToCart }: ProductCardProps) {
+  const [isLoadingImage, setIsLoadingImage] = useState(false);
+  const [imageLoadFailed, setImageLoadFailed] = useState(false);
+
   const hasDiscount = product.compareAtPrice && product.compareAtPrice > product.price;
   const discountPercent = hasDiscount
     ? Math.round(((product.compareAtPrice! - product.price) / product.compareAtPrice!) * 100)
     : 0;
+
+  const imageUrl = product.images?.[0];
+  const fallbackUrl = 'https://placehold.co/300x300/1A1A1A/E8448A?text=Malamia';
 
   return (
     <TouchableOpacity
@@ -38,11 +45,23 @@ export default function ProductCard({ product, onPress, onAddToCart }: ProductCa
     >
       {/* Product Image */}
       <View style={styles.imageContainer}>
+        {isLoadingImage && !imageLoadFailed && (
+          <View style={styles.loadingOverlay}>
+            <ActivityIndicator size="small" color={Colors.primary} />
+          </View>
+        )}
         <Image
-          source={{ uri: product.images[0] ?? 'https://placehold.co/300x300/1A1A1A/E8448A?text=Malamia' }}
+          source={{ uri: imageLoadFailed ? fallbackUrl : (imageUrl || fallbackUrl) }}
           style={styles.image}
           contentFit="cover"
           transition={200}
+          onLoadStart={() => setIsLoadingImage(true)}
+          onLoad={() => setIsLoadingImage(false)}
+          onError={() => {
+            setIsLoadingImage(false);
+            setImageLoadFailed(true);
+          }}
+          cachePolicy="memory-disk"
         />
         <LinearGradient
           colors={['transparent', 'rgba(0,0,0,0.4)']}
@@ -99,6 +118,13 @@ const styles = StyleSheet.create({
     aspectRatio: 3 / 4,
     backgroundColor: Colors.surface,
     position: 'relative',
+  },
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 1,
+    backgroundColor: `${Colors.surface}80`,
   },
   image: {
     width: '100%',
