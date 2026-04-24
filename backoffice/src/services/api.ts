@@ -6,15 +6,23 @@ const BASE_URL = process.env.REACT_APP_API_URL || 'https://malamia.onrender.com/
 const apiClient: AxiosInstance = axios.create({
   baseURL: BASE_URL,
   timeout: 15000,
-  headers: { 'Content-Type': 'application/json' },
 });
 
-// Attach admin JWT
+// Attach admin JWT and handle FormData content type
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem('adminToken');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  
+  // Let axios automatically set Content-Type for FormData
+  if (!(config.data instanceof FormData)) {
+    config.headers['Content-Type'] = 'application/json';
+  } else {
+    // Remove Content-Type for FormData so axios/browser can set it with boundary
+    delete config.headers['Content-Type'];
+  }
+  
   return config;
 });
 
@@ -48,13 +56,9 @@ export const productsApi = {
     apiClient.get('/admin/products', { params }),
   getById: (id: string) => apiClient.get(`/admin/products/${id}`),
   create: (formData: FormData) =>
-    apiClient.post('/admin/products', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    }),
+    apiClient.post('/admin/products', formData),
   update: (id: string, formData: FormData) =>
-    apiClient.put(`/admin/products/${id}`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    }),
+    apiClient.put(`/admin/products/${id}`, formData),
   delete: (id: string) => apiClient.delete(`/admin/products/${id}`),
   togglePublish: (id: string, isPublished: boolean) =>
     apiClient.patch(`/admin/products/${id}/publish`, { isPublished }),
