@@ -6,6 +6,7 @@ import orderRoutes from './orders';
 import loyaltyRoutes from './loyalty';
 import notificationRoutes from './notifications';
 import adminRoutes from './admin';
+import seedRoutes from './seed';
 
 export const router = Router();
 
@@ -16,3 +17,4 @@ router.use('/orders', orderRoutes);
 router.use('/loyalty', loyaltyRoutes);
 router.use('/notifications', notificationRoutes);
 router.use('/admin', adminRoutes);
+router.use('/seed', seedRoutes);
