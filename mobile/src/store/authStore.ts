@@ -52,8 +52,11 @@ export const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
   login: async (email, password) => {
     set({ isLoading: true, error: null });
     try {
-      const { data } = await authApi.login(email, password);
-      const { user, accessToken, refreshToken } = data.data;
+      console.log('🔐 Login attempt for:', email);
+      const response = await authApi.login(email, password);
+      console.log('✅ Login response:', response);
+      const { user, accessToken, refreshToken } = response.data.data;
+      console.log('👤 User data:', user);
       await AsyncStorage.multiSet([
         ['accessToken', accessToken],
         ['refreshToken', refreshToken],
@@ -61,9 +64,13 @@ export const useAuthStore = create<AuthState & AuthActions>((set, get) => ({
       ]);
       set({ user, accessToken, isAuthenticated: true, error: null });
     } catch (err: unknown) {
+      console.error('❌ Login error:', err);
+      const axiosError = err as any;
       const message =
-        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
+        axiosError?.response?.data?.message ??
+        axiosError?.message ??
         'Login failed. Please try again.';
+      console.error('📝 Error message:', message);
       set({ error: message });
       throw new Error(message);
     } finally {

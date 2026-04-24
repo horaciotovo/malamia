@@ -31,9 +31,14 @@ export default function LoginScreen({ navigation }: AuthLoginProps) {
       return;
     }
     try {
+      console.log('📧 Attempting login with email:', email);
       await login(email.trim().toLowerCase(), password);
+      console.log('✅ Login successful!');
     } catch (err: unknown) {
-      Alert.alert('Error al iniciar sesión', (err as Error).message);
+      console.error('🔴 Login failed with error:', err);
+      const errorMessage = (err as Error).message || 'Error desconocido al iniciar sesión';
+      console.error('📝 Error message to show:', errorMessage);
+      Alert.alert('Error al iniciar sesión', errorMessage);
     }
   };
 
