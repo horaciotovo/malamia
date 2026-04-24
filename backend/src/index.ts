@@ -28,18 +28,60 @@ if (!process.env.JWT_REFRESH_SECRET) {
 app.set('trust proxy', 1);
 
 // ─── CORS ───────────────────────────────────
+const allowedOrigins = [
+  'https://jolly-medovik-9cc8d6.netlify.app',  // Mobile web app
+  'https://malamiabackoffice.netlify.app',      // Backoffice admin
+  'http://localhost:3000',                      // Local dev
+  'http://localhost:5173',                      // Local backoffice dev
+  /localhost/,                                  // Any localhost
+];
+
 app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: false,
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, Postman, curl, etc.)
+    if (!origin) {
+      return callback(null, true);
+    }
+    
+    // Check if origin is in allowed list
+    if (allowedOrigins.some(allowed => {
+      if (allowed instanceof RegExp) {
+        return allowed.test(origin);
+      }
+      return allowed === origin;
+    })) {
+      callback(null, true);
+    } else {
+      // Allow but log for debugging
+      console.log(`⚠️  CORS request from: ${origin}`);
+      callback(null, true);
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range'],
+  credentials: true,
+  maxAge: 86400,
 }));
 
-// ─── Additional CORS Headers ────────────────
+// ─── Additional CORS Headers for multipart uploads ─
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  const origin = req.get('origin');
+  
+  // Allow origin if no origin or if it's in our allowed list
+  if (!origin) {
+    res.header('Access-Control-Allow-Origin', '*');
+  } else if (allowedOrigins.some(allowed => {
+    if (allowed instanceof RegExp) return allowed.test(origin);
+    return allowed === origin;
+  }) || !origin) {
+    res.header('Access-Control-Allow-Origin', origin || '*');
+  }
+  
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  res.header('Access-Control-Expose-Headers', 'Content-Range, X-Content-Range');
+  res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Max-Age', '86400');
   
   // Handle preflight OPTIONS
