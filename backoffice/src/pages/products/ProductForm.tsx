@@ -162,7 +162,15 @@ export default function ProductForm() {
               <div className="flex flex-wrap gap-3">
                 {existingImages.map((url, i) => (
                   <div key={i} className="relative group">
-                    <img src={url} className="w-20 h-20 rounded-lg object-cover" alt="" />
+                    <img
+                      src={`${url}${url.includes('?') ? '&' : '?'}w=80&h=80&fit=crop&q=80&fm=webp`}
+                      className="w-20 h-20 rounded-lg object-cover"
+                      alt="Product preview"
+                      crossOrigin="anonymous"
+                      onError={(e) => {
+                        e.currentTarget.src = url; // Fallback to original without params
+                      }}
+                    />
                     <button
                       type="button"
                       onClick={() => setExistingImages((p) => p.filter((_, idx) => idx !== i))}

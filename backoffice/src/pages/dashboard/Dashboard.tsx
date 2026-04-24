@@ -21,11 +21,19 @@ const MOCK_REVENUE = [
 export default function Dashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     dashboardApi.getStats()
-      .then((r) => setStats(r.data.data))
-      .catch(() => {})
+      .then((r) => {
+        console.log('Dashboard stats:', r.data);
+        setStats(r.data.data);
+        setError(null);
+      })
+      .catch((err) => {
+        console.error('Failed to load dashboard stats:', err);
+        setError(err.message || 'Failed to load stats');
+      })
       .finally(() => setLoading(false));
   }, []);
 
