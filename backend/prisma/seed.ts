@@ -1,9 +1,32 @@
 import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log('🌱 Seeding database...');
+
+  // ── Admin User ───────────────────────────────────────────────────────────────
+  const adminEmail = 'htovoadmin@gmail.com';
+  const adminPassword = 'admin123456';
+  const existingAdmin = await prisma.user.findUnique({ where: { email: adminEmail } });
+  
+  if (!existingAdmin) {
+    const passwordHash = await bcrypt.hash(adminPassword, 10);
+    await prisma.user.create({
+      data: {
+        email: adminEmail,
+        passwordHash,
+        firstName: 'Admin',
+        lastName: 'User',
+        role: 'ADMIN',
+        isActive: true,
+      },
+    });
+    console.log(`✅ Admin user created: ${adminEmail} / ${adminPassword}`);
+  } else {
+    console.log(`✅ Admin user already exists`);
+  }
 
   // ── Categories ──────────────────────────────────────────────────────────────
   const categories = await Promise.all([

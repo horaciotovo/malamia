@@ -79,13 +79,16 @@ app.use(async (req, res, next) => {
       await prisma.user.findFirst({ take: 1 });
       console.log('✅ Database ready');
     } catch (error) {
-      console.log('⏳ Running migrations...');
+      console.log('⏳ Running migrations and seeding...');
       try {
         const { execSync } = require('child_process');
-        execSync('npx prisma migrate deploy', { stdio: 'inherit' });
-        console.log('✅ Migrations completed');
+        execSync('npx prisma migrate deploy && npm run db:seed', { 
+          stdio: 'inherit',
+          cwd: process.cwd()
+        });
+        console.log('✅ Migrations and seeding completed');
       } catch (migrationError) {
-        console.error('❌ Migration failed:', migrationError);
+        console.error('❌ Migration/seed failed:', migrationError);
       }
     }
   }
