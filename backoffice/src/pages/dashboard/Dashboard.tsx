@@ -21,7 +21,7 @@ const MOCK_REVENUE = [
 export default function Dashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [_error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     dashboardApi.getStats()
