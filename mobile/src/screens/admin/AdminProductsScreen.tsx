@@ -8,10 +8,19 @@ import { Product } from '../../types';
 import { AdminProductsProps } from '../../navigation/types';
 import { useAuthStore } from '../../store/authStore';
 
-// Derive backoffice URL from API base
+// Derive backoffice URL from environment or use defaults
 const getBackofficeUrl = () => {
-  // For local backoffice dev server
-  return 'http://192.168.0.3:5173';
+  // On web platform
+  if (Platform.OS === 'web') {
+    // Check if running in browser
+    if (typeof window !== 'undefined') {
+      // If deployed to Netlify, use the backoffice Netlify URL
+      // Deployed backoffice URL (update if using different domain)
+      return 'https://malamia-backoffice.netlify.app';
+    }
+  }
+  // Fallback for local development
+  return 'http://localhost:5173';
 };
 
 const BACKOFFICE_URL = getBackofficeUrl();
