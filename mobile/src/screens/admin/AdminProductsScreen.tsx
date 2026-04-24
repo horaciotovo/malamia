@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, ActivityIndicator, Alert, Linking, Image } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, ActivityIndicator, Alert, Linking, Image, Platform } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Colors } from '../../theme/colors';
 import { Spacing } from '../../theme/spacing';
@@ -80,10 +80,23 @@ export default function AdminProductsScreen({ navigation }: AdminProductsProps) 
           products.map((product) => (
             <View key={product.id} style={styles.productCard}>
               {product.images && product.images.length > 0 ? (
-                <Image
-                  source={{ uri: product.images[0] }}
-                  style={styles.productImage}
-                />
+                Platform.OS === 'web' ? (
+                  <img
+                    src={`${product.images[0]}?q=80&fm=webp`}
+                    alt={product.name}
+                    style={{
+                      width: 100,
+                      height: 100,
+                      borderRadius: 8,
+                      objectFit: 'cover',
+                    } as React.CSSProperties}
+                  />
+                ) : (
+                  <Image
+                    source={{ uri: product.images[0] }}
+                    style={styles.productImage}
+                  />
+                )
               ) : (
                 <View style={styles.productImagePlaceholder}>
                   <MaterialCommunityIcons name="image" size={32} color={Colors.textTertiary} />

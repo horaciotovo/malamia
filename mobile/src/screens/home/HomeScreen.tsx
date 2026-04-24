@@ -8,11 +8,12 @@ import {
   FlatList,
   Animated,
   Dimensions,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { Image } from 'expo-image';
+import { Image as ExpoImage } from 'expo-image';
 import { HomeScreenProps } from '../../navigation/types';
 import { useAuthStore } from '../../store/authStore';
 import { useProductStore } from '../../store/productStore';
@@ -58,7 +59,20 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
           </View>
           <TouchableOpacity style={styles.avatar}>
             {user?.avatar ? (
-              <Image source={{ uri: user.avatar }} style={styles.avatarImg} contentFit="cover" />
+              Platform.OS === 'web' ? (
+                <img
+                  src={user.avatar}
+                  alt="Avatar"
+                  style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: 22,
+                    objectFit: 'cover',
+                  } as React.CSSProperties}
+                />
+              ) : (
+                <ExpoImage source={{ uri: user.avatar }} style={styles.avatarImg} contentFit="cover" />
+              )
             ) : (
               <LinearGradient colors={Colors.gradientPrimary} style={styles.avatarGradient}>
                 <Text style={styles.avatarInitial}>

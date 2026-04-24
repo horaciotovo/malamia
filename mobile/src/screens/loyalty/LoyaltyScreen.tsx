@@ -6,11 +6,12 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { Image } from 'expo-image';
+import { Image as ExpoImage } from 'expo-image';
 import { LoyaltyScreenProps } from '../../navigation/types';
 import { useAuthStore } from '../../store/authStore';
 import { loyaltyApi } from '../../services/api';
@@ -167,7 +168,20 @@ function LeaderboardRow({ entry, isMe }: { entry: LeaderboardEntry; isMe: boolea
       <Text style={lbStyles.rank}>{medal ?? `#${entry.rank}`}</Text>
       <View style={lbStyles.avatar}>
         {entry.avatar ? (
-          <Image source={{ uri: entry.avatar }} style={{ width: 36, height: 36, borderRadius: 18 }} contentFit="cover" />
+          Platform.OS === 'web' ? (
+            <img
+              src={`${entry.avatar}?q=80&fm=webp`}
+              alt={entry.firstName}
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: 18,
+                objectFit: 'cover',
+              } as React.CSSProperties}
+            />
+          ) : (
+            <ExpoImage source={{ uri: entry.avatar }} style={{ width: 36, height: 36, borderRadius: 18 }} contentFit="cover" />
+          )
         ) : (
           <LinearGradient colors={Colors.gradientPrimary} style={{ width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' }}>
             <Text style={{ color: Colors.white, fontWeight: '700', fontSize: 14 }}>

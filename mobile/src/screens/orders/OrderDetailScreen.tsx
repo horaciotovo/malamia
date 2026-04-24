@@ -5,10 +5,11 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { Image } from 'expo-image';
+import { Image as ExpoImage } from 'expo-image';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ProfileStackParamList } from '../../navigation/types';
 import { ordersApi } from '../../services/api';
@@ -144,11 +145,24 @@ export default function OrderDetailScreen({ navigation, route }: Props) {
             <Text style={styles.sectionTitle}>Artículos</Text>
           {order.items.map((item) => (
             <View key={item.id} style={styles.itemRow}>
-              <Image
-                source={{ uri: item.product?.images?.[0] }}
-                style={styles.itemImage}
-                contentFit="cover"
-              />
+              {Platform.OS === 'web' ? (
+                <img
+                  src={`${item.product?.images?.[0] || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%231A1A1A%22 width=%22100%22 height=%22100%22/%3E%3C/svg%3E'}?q=80&fm=webp`}
+                  alt={item.product?.name}
+                  style={{
+                    width: 100,
+                    height: 100,
+                    borderRadius: 8,
+                    objectFit: 'cover',
+                  } as React.CSSProperties}
+                />
+              ) : (
+                <ExpoImage
+                  source={{ uri: item.product?.images?.[0] }}
+                  style={styles.itemImage}
+                  contentFit="cover"
+                />
+              )}
               <View style={styles.itemInfo}>
                 <Text style={styles.itemName} numberOfLines={2}>{item.product?.name ?? 'Product'}</Text>
                 <Text style={styles.itemQty}>Cant: {item.quantity}</Text>

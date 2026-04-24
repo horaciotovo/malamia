@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Image } from 'expo-image';
+import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
+import { Image as ExpoImage } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { CartItem as CartItemType } from '../types';
 import { formatPrice } from '../utils/formatPrice';
@@ -23,12 +23,25 @@ export default function CartItem({ item, onRemove, onIncrease, onDecrease }: Car
 
   return (
     <View style={styles.card}>
-      <Image
-        source={{ uri: product.images[0] ?? 'https://placehold.co/100x100/1A1A1A/E8448A?text=?' }}
-        style={styles.image}
-        contentFit="cover"
-        transition={150}
-      />
+      {Platform.OS === 'web' ? (
+        <img
+          src={`${product.images[0] ?? 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%231A1A1A%22 width=%22100%22 height=%22100%22/%3E%3C/svg%3E'}?q=80&fm=webp`}
+          alt={product.name}
+          style={{
+            width: 80,
+            height: 100,
+            borderRadius: 8,
+            objectFit: 'cover',
+          } as React.CSSProperties}
+        />
+      ) : (
+        <ExpoImage
+          source={{ uri: product.images[0] ?? 'https://placehold.co/100x100/1A1A1A/E8448A?text=?' }}
+          style={styles.image}
+          contentFit="cover"
+          transition={150}
+        />
+      )}
       <View style={styles.content}>
         <View style={styles.topRow}>
           <Text style={styles.name} numberOfLines={2}>{product.name}</Text>

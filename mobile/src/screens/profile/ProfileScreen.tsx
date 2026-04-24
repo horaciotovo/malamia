@@ -7,11 +7,12 @@ import {
   FlatList,
   TouchableOpacity,
   Alert,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { Image } from 'expo-image';
+import { Image as ExpoImage } from 'expo-image';
 import { ProfileScreenProps } from '../../navigation/types';
 import { useAuthStore } from '../../store/authStore';
 import { ordersApi } from '../../services/api';
@@ -62,7 +63,20 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
         >
           <View style={styles.avatarContainer}>
             {user?.avatar ? (
-              <Image source={{ uri: user.avatar }} style={styles.avatar} contentFit="cover" />
+              Platform.OS === 'web' ? (
+                <img
+                  src={user.avatar}
+                  alt="Avatar"
+                  style={{
+                    width: 80,
+                    height: 80,
+                    borderRadius: 50,
+                    objectFit: 'cover',
+                  } as React.CSSProperties}
+                />
+              ) : (
+                <ExpoImage source={{ uri: user.avatar }} style={styles.avatar} contentFit="cover" />
+              )
             ) : (
               <LinearGradient colors={Colors.gradientPrimary} style={styles.avatarGradient}>
                 <Text style={styles.avatarInitial}>
