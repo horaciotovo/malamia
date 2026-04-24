@@ -14,12 +14,16 @@ const getBackofficeUrl = () => {
   if (Platform.OS === 'web') {
     // Check if running in browser
     if (typeof window !== 'undefined') {
-      // If deployed to Netlify, use the backoffice Netlify URL
-      // Deployed backoffice URL (update if using different domain)
+      // For local development: use localhost:5173
+      // For production: use deployed Netlify URL
+      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      if (isLocalhost) {
+        return 'http://localhost:5173';
+      }
       return 'https://malamiabackoffice.netlify.app';
     }
   }
-  // Fallback for local development
+  // Fallback for native development
   return 'http://localhost:5173';
 };
 

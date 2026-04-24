@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 
-// Render backend URL
-const BASE_URL = process.env.REACT_APP_API_URL || 'https://malamia.onrender.com/api';
+// Local backend URL for development
+const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
 
 const apiClient: AxiosInstance = axios.create({
   baseURL: BASE_URL,
