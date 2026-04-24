@@ -6,6 +6,7 @@ import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import { router } from './routes';
 import { errorHandler } from './middleware/errorHandler';
+import { prisma } from './services/prisma';
 import crypto from 'crypto';
 
 const app = express();
@@ -67,6 +68,29 @@ app.use(limiter);
 // ─── Parsing ────────────────────────────────
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// ─── Auto-migrate on first request ──────────
+let migrationsRun = false;
+app.use(async (req, res, next) => {
+  if (!migrationsRun && req.path.startsWith('/api')) {
+    migrationsRun = true;
+    try {
+      console.log('⏳ Checking database schema...');
+      await prisma.user.findFirst({ take: 1 });
+      console.log('✅ Database ready');
+    } catch (error) {
+      console.log('⏳ Running migrations...');
+      try {
+        const { execSync } = require('child_process');
+        execSync('npx prisma migrate deploy', { stdio: 'inherit' });
+        console.log('✅ Migrations completed');
+      } catch (migrationError) {
+        console.error('❌ Migration failed:', migrationError);
+      }
+    }
+  }
+  next();
+});
 
 // ─── Logging ────────────────────────────────
 if (process.env.NODE_ENV !== 'test') {
