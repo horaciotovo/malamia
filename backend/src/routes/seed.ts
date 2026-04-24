@@ -33,11 +33,11 @@ router.post('/', async (req: Request, res: Response) => {
 
     // ── Categories ─────────────────────────────────────────────────────────
     const categoryData = [
-      { name: 'Skincare', slug: 'skincare', image: 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400', sortOrder: 1 },
-      { name: 'Hair Care', slug: 'haircare', image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400', sortOrder: 2 },
-      { name: 'Makeup', slug: 'makeup', image: 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400', sortOrder: 3 },
-      { name: 'Fragrances', slug: 'fragrances', image: 'https://images.unsplash.com/photo-1541643600914-78b084683702?w=400', sortOrder: 4 },
-      { name: 'Body Care', slug: 'body-care', image: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400', sortOrder: 5 },
+      { name: 'Remeras', slug: 'remeras', image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400', sortOrder: 1 },
+      { name: 'Jeans', slug: 'jeans', image: 'https://images.unsplash.com/photo-1542272604-787c62d465d1?w=400', sortOrder: 2 },
+      { name: 'Shorts', slug: 'shorts', image: 'https://images.unsplash.com/photo-1506629082847-11d3e392e1d5?w=400', sortOrder: 3 },
+      { name: 'Polleras', slug: 'polleras', image: 'https://images.unsplash.com/photo-1583496661160-fb5b0c628d8f?w=400', sortOrder: 4 },
+      { name: 'Bodys', slug: 'bodys', image: 'https://images.unsplash.com/photo-1506146568402-b0b080d8f59b?w=400', sortOrder: 5 },
     ];
 
     let categoriesCreated = 0;
@@ -55,38 +55,42 @@ router.post('/', async (req: Request, res: Response) => {
 
     // ── Products (20+ items) ────────────────────────────────────────────────
     const productsData = [
-      // Skincare
-      { name: 'Radiance Vitamin C Serum', price: 42.99, compareAtPrice: 59.99, categorySlug: 'skincare', images: ['https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=600'], stock: 85, isFeatured: true },
-      { name: 'Hydra Boost Moisturiser', price: 34.50, compareAtPrice: null, categorySlug: 'skincare', images: ['https://images.unsplash.com/photo-1601049676869-702ea24cfd58?w=600'], stock: 120, isFeatured: true },
-      { name: 'Gentle Foaming Cleanser', price: 18.99, compareAtPrice: null, categorySlug: 'skincare', images: ['https://images.unsplash.com/photo-1556228841-a3c527ebefe5?w=600'], stock: 200, isFeatured: false },
-      { name: 'Retinol Night Repair Cream', price: 54.00, compareAtPrice: 68.00, categorySlug: 'skincare', images: ['https://images.unsplash.com/photo-1612817288484-6f916006741a?w=600'], stock: 60, isFeatured: true },
-      { name: 'Anti-Aging Eye Serum', price: 38.00, compareAtPrice: 48.00, categorySlug: 'skincare', images: ['https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=600'], stock: 75, isFeatured: false },
-      { name: 'Hydrating Sheet Mask', price: 12.99, compareAtPrice: 16.99, categorySlug: 'skincare', images: ['https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=600'], stock: 150, isFeatured: false },
+      // Remeras
+      { name: 'Remera Blanca Clásica', price: 29.99, compareAtPrice: 39.99, categorySlug: 'remeras', images: ['https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600'], stock: 100, isFeatured: true },
+      { name: 'Remera Negra Básica', price: 29.99, compareAtPrice: 39.99, categorySlug: 'remeras', images: ['https://images.unsplash.com/photo-1593642532400-2682a8a672e5?w=600'], stock: 95, isFeatured: true },
+      { name: 'Remera Gris Oversize', price: 34.99, compareAtPrice: 45.00, categorySlug: 'remeras', images: ['https://images.unsplash.com/photo-1506629082847-11d3e392e1d5?w=600'], stock: 85, isFeatured: false },
+      { name: 'Remera Estampada Colores', price: 39.99, compareAtPrice: 49.99, categorySlug: 'remeras', images: ['https://images.unsplash.com/photo-1608231387042-ec033da64485?w=600'], stock: 70, isFeatured: true },
+      { name: 'Remera Rosa Pastel', price: 32.99, compareAtPrice: 42.00, categorySlug: 'remeras', images: ['https://images.unsplash.com/photo-1576566588286-c1fe8e1e5d6d?w=600'], stock: 80, isFeatured: false },
+      { name: 'Remera Azul Marino', price: 30.99, compareAtPrice: 40.00, categorySlug: 'remeras', images: ['https://images.unsplash.com/photo-1556821840-a63d3b37c038?w=600'], stock: 90, isFeatured: false },
+      { name: 'Remera Verde Menta', price: 33.99, compareAtPrice: 44.00, categorySlug: 'remeras', images: ['https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600'], stock: 75, isFeatured: false },
       
-      // Hair Care
-      { name: 'Argan Oil Repair Shampoo', price: 22.00, compareAtPrice: null, categorySlug: 'haircare', images: ['https://images.unsplash.com/photo-1637418553553-c6f00c27e41a?w=600'], stock: 150, isFeatured: true },
-      { name: 'Deep Conditioning Mask', price: 28.50, compareAtPrice: 35.00, categorySlug: 'haircare', images: ['https://images.unsplash.com/photo-1522337660859-02fbefca4702?w=600'], stock: 90, isFeatured: true },
-      { name: 'Keratin Hair Treatment', price: 45.00, compareAtPrice: 60.00, categorySlug: 'haircare', images: ['https://images.unsplash.com/photo-1543241861-cbf41eb00340?w=600'], stock: 55, isFeatured: false },
-      { name: 'Volumizing Conditioner', price: 19.99, compareAtPrice: null, categorySlug: 'haircare', images: ['https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600'], stock: 120, isFeatured: false },
-      { name: 'Anti-Frizz Serum', price: 24.50, compareAtPrice: 32.00, categorySlug: 'haircare', images: ['https://images.unsplash.com/photo-1596289519420-adc7cff1e1c4?w=600'], stock: 80, isFeatured: false },
-      { name: 'Scalp Treatment Oil', price: 31.00, compareAtPrice: 42.00, categorySlug: 'haircare', images: ['https://images.unsplash.com/photo-1633426308639-a3b98a35ffe8?w=600'], stock: 65, isFeatured: false },
+      // Jeans
+      { name: 'Jean Skinny Azul Oscuro', price: 59.99, compareAtPrice: 79.99, categorySlug: 'jeans', images: ['https://images.unsplash.com/photo-1542272604-787c62d465d1?w=600'], stock: 65, isFeatured: true },
+      { name: 'Jean Slim Clásico', price: 64.99, compareAtPrice: 84.99, categorySlug: 'jeans', images: ['https://images.unsplash.com/photo-1542821131-44ed10dd0b30?w=600'], stock: 60, isFeatured: true },
+      { name: 'Jean Roto Diseño', price: 69.99, compareAtPrice: 89.99, categorySlug: 'jeans', images: ['https://images.unsplash.com/photo-1538002588580-374a6b5f7556?w=600'], stock: 55, isFeatured: false },
+      { name: 'Jean Mom Fit', price: 64.99, compareAtPrice: 84.99, categorySlug: 'jeans', images: ['https://images.unsplash.com/photo-1505886711169-3cbb0d50e7e0?w=600'], stock: 70, isFeatured: false },
+      { name: 'Jean Azul Claro', price: 54.99, compareAtPrice: 74.99, categorySlug: 'jeans', images: ['https://images.unsplash.com/photo-1552820728-8ac41f1ce891?w=600'], stock: 80, isFeatured: false },
       
-      // Makeup
-      { name: 'Matte Liquid Lipstick', price: 16.99, compareAtPrice: 22.00, categorySlug: 'makeup', images: ['https://images.unsplash.com/photo-1533737710307-6871ac3c33d9?w=600'], stock: 200, isFeatured: true },
-      { name: 'Foundation Primer', price: 28.00, compareAtPrice: 35.00, categorySlug: 'makeup', images: ['https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600'], stock: 110, isFeatured: false },
-      { name: 'Eyeshadow Palette', price: 35.99, compareAtPrice: 49.99, categorySlug: 'makeup', images: ['https://images.unsplash.com/photo-1513063693919-ab349dd3f348?w=600'], stock: 70, isFeatured: true },
-      { name: 'Mascara Volume Plus', price: 19.99, compareAtPrice: 26.00, categorySlug: 'makeup', images: ['https://images.unsplash.com/photo-1580707100604-45d3a86e5586?w=600'], stock: 160, isFeatured: false },
-      { name: 'Blush Powder Compact', price: 14.50, compareAtPrice: 19.00, categorySlug: 'makeup', images: ['https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600'], stock: 140, isFeatured: false },
+      // Shorts
+      { name: 'Short Denim Clásico', price: 39.99, compareAtPrice: 49.99, categorySlug: 'shorts', images: ['https://images.unsplash.com/photo-1506629082847-11d3e392e1d5?w=600'], stock: 90, isFeatured: true },
+      { name: 'Short Deportivo Negro', price: 34.99, compareAtPrice: 44.99, categorySlug: 'shorts', images: ['https://images.unsplash.com/photo-1574701148212-403bdad855b7?w=600'], stock: 100, isFeatured: false },
+      { name: 'Short Khaki', price: 44.99, compareAtPrice: 54.99, categorySlug: 'shorts', images: ['https://images.unsplash.com/photo-1517922550989-4eb93e53a526?w=600'], stock: 75, isFeatured: false },
+      { name: 'Short Blanco Verano', price: 39.99, compareAtPrice: 49.99, categorySlug: 'shorts', images: ['https://images.unsplash.com/photo-1553224311-beab87adad81?w=600'], stock: 85, isFeatured: true },
+      { name: 'Short Rojo Deportivo', price: 37.99, compareAtPrice: 47.99, categorySlug: 'shorts', images: ['https://images.unsplash.com/photo-1622551693241-abc0ded2f5d0?w=600'], stock: 80, isFeatured: false },
       
-      // Fragrances
-      { name: 'Floral Eau de Parfum', price: 79.00, compareAtPrice: 99.00, categorySlug: 'fragrances', images: ['https://images.unsplash.com/photo-1524457600899-b8b0e3c7beef?w=600'], stock: 45, isFeatured: true },
-      { name: 'Citrus Fresh Cologne', price: 59.99, compareAtPrice: 75.00, categorySlug: 'fragrances', images: ['https://images.unsplash.com/photo-1547887538-e3a2c3fb3c0f?w=600'], stock: 55, isFeatured: false },
-      { name: 'Woody Musk Perfume', price: 85.50, compareAtPrice: 110.00, categorySlug: 'fragrances', images: ['https://images.unsplash.com/photo-1592887720694-26d35a50ee38?w=600'], stock: 35, isFeatured: true },
+      // Polleras
+      { name: 'Pollera Negra Elegante', price: 54.99, compareAtPrice: 69.99, categorySlug: 'polleras', images: ['https://images.unsplash.com/photo-1583496661160-fb5b0c628d8f?w=600'], stock: 55, isFeatured: true },
+      { name: 'Pollera Jean Azul', price: 59.99, compareAtPrice: 74.99, categorySlug: 'polleras', images: ['https://images.unsplash.com/photo-1518991669915-b8d1c1e98e2f?w=600'], stock: 50, isFeatured: true },
+      { name: 'Pollera Gris Casual', price: 49.99, compareAtPrice: 64.99, categorySlug: 'polleras', images: ['https://images.unsplash.com/photo-1543163521-9145f2c86899?w=600'], stock: 60, isFeatured: false },
+      { name: 'Pollera Estampada Flores', price: 64.99, compareAtPrice: 79.99, categorySlug: 'polleras', images: ['https://images.unsplash.com/photo-1502716808539-be3f45dd333e?w=600'], stock: 45, isFeatured: false },
+      { name: 'Pollera Mini Negra', price: 52.99, compareAtPrice: 67.99, categorySlug: 'polleras', images: ['https://images.unsplash.com/photo-1595948361372-9ab337e92e8e?w=600'], stock: 65, isFeatured: false },
       
-      // Body Care
-      { name: 'Luxe Body Lotion', price: 24.99, compareAtPrice: 32.00, categorySlug: 'body-care', images: ['https://images.unsplash.com/photo-1556228720-8973a46912d5?w=600'], stock: 140, isFeatured: true },
-      { name: 'Scrub Body Exfoliant', price: 18.50, compareAtPrice: 24.00, categorySlug: 'body-care', images: ['https://images.unsplash.com/photo-1556228720-195a672e8a03?w=600'], stock: 95, isFeatured: false },
-      { name: 'Rosehip Body Oil', price: 32.00, compareAtPrice: 42.00, categorySlug: 'body-care', images: ['https://images.unsplash.com/photo-1556214014412-696021355e3f?w=600'], stock: 70, isFeatured: true },
+      // Bodys
+      { name: 'Body Blanco Básico', price: 24.99, compareAtPrice: 34.99, categorySlug: 'bodys', images: ['https://images.unsplash.com/photo-1506629082847-11d3e392e1d5?w=600'], stock: 120, isFeatured: true },
+      { name: 'Body Negro Elegante', price: 26.99, compareAtPrice: 36.99, categorySlug: 'bodys', images: ['https://images.unsplash.com/photo-1506146568402-b0b080d8f59b?w=600'], stock: 110, isFeatured: true },
+      { name: 'Body Estampado Colores', price: 31.99, compareAtPrice: 41.99, categorySlug: 'bodys', images: ['https://images.unsplash.com/photo-1544526017-2ab06e4c4c04?w=600'], stock: 95, isFeatured: false },
+      { name: 'Body Rojo Pasión', price: 27.99, compareAtPrice: 37.99, categorySlug: 'bodys', images: ['https://images.unsplash.com/photo-1542821131-44ed10dd0b30?w=600'], stock: 100, isFeatured: false },
+      { name: 'Body Azul Marino', price: 25.99, compareAtPrice: 35.99, categorySlug: 'bodys', images: ['https://images.unsplash.com/photo-1512207736139-795b8f15ef04?w=600'], stock: 105, isFeatured: false },
     ];
 
     let productsCreated = 0;
