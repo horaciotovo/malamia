@@ -3,13 +3,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Determine backend URL based on environment
 const getBackendUrl = () => {
-  // Check if running in web/browser environment
-  if (typeof window !== 'undefined') {
-    // For local development on web: use localhost
-    return 'http://localhost:3001/api';
-  }
-  // For native apps: use the cloud backend or env variable
-  return process.env.REACT_APP_API_URL || 'https://malamia.onrender.com/api';
+  // Always use localhost for development
+  return 'http://localhost:3001/api';
 };
 
 const BACKEND_URL = getBackendUrl();
