@@ -8,13 +8,10 @@ import { Category } from '../../types';
 import { AdminCategoriesProps } from '../../navigation/types';
 import { useAuthStore } from '../../store/authStore';
 
-// Derive backoffice URL from API base (http://192.168.0.3:3001/api -> http://192.168.0.3:5176)
+// Derive backoffice URL from API base
 const getBackofficeUrl = () => {
-  const apiBase = 'http://192.168.0.3:3001/api';
-  const url = new URL(apiBase);
-  url.port = '5176';
-  url.pathname = '';
-  return url.toString().replace(/\/$/, '');
+  // For local backoffice dev server
+  return 'http://192.168.0.3:5173';
 };
 
 const BACKOFFICE_URL = getBackofficeUrl();

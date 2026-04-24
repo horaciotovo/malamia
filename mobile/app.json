@@ -19,7 +19,8 @@
       "bundleIdentifier": "com.malamia.app",
       "infoPlist": {
         "NSCameraUsageDescription": "Malamia needs camera access for profile photos.",
-        "NSPhotoLibraryUsageDescription": "Malamia needs photo library access for profile photos."
+        "NSPhotoLibraryUsageDescription": "Malamia needs photo library access for profile photos.",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
