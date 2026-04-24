@@ -1,7 +1,10 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BASE_URL = 'https://natalie-callow-welcomingly.ngrok-free.dev/api';
+// Use CORS proxy to bypass ngrok header stripping
+const BACKEND_URL = 'https://natalie-callow-welcomingly.ngrok-free.dev/api';
+const CORS_PROXY = 'https://corsproxy.io/?';
+const BASE_URL = CORS_PROXY + encodeURIComponent(BACKEND_URL);
 
 const apiClient: AxiosInstance = axios.create({
   baseURL: BASE_URL,
