@@ -10,14 +10,24 @@ import { errorHandler } from './middleware/errorHandler';
 const app = express();
 const PORT = process.env.PORT ?? 3001;
 
+// ─── CORS Headers (explicit for ngrok compatibility) ──
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Max-Age', '86400');
+  
+  // Handle preflight OPTIONS
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 // ─── Security ───────────────────────────────
-app.use(helmet());
-app.use(
-  cors({
-    origin: (process.env.ALLOWED_ORIGINS ?? '').split(','),
-    credentials: true,
-  }),
-);
+// Note: helmet disabled for ngrok CORS compatibility in dev
+// app.use(helmet());
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 min
