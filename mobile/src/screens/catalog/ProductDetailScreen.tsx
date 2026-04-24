@@ -8,9 +8,10 @@ import {
   Dimensions,
   Animated,
   Alert,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Image } from 'expo-image';
+import { Image as ExpoImage } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ProductDetailProps } from '../../navigation/types';
@@ -34,6 +35,7 @@ export default function ProductDetailScreen({ route, navigation }: ProductDetail
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [adding, setAdding] = useState(false);
+  const [imageLoadFailed, setImageLoadFailed] = useState(false);
   const { addItem } = useCartStore();
   const buttonScale = useRef(new Animated.Value(1)).current;
 
@@ -81,12 +83,27 @@ export default function ProductDetailScreen({ route, navigation }: ProductDetail
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* ── Images ──────────────────────────── */}
         <View style={styles.imageSection}>
-          <Image
-            source={{ uri: product.images[selectedImage] ?? 'https://placehold.co/400x500/1A1A1A/E8448A?text=Malamia' }}
-            style={styles.mainImage}
-            contentFit="cover"
-            transition={200}
-          />
+          {Platform.OS === 'web' ? (
+            <img
+              src={imageLoadFailed ? 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="500"%3E%3Crect fill="%231A1A1A" width="400" height="500"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="20" fill="%23E8448A"%3EMalamia%3C/text%3E%3C/svg%3E' : `${product.images[selectedImage] ?? 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="500"%3E%3Crect fill="%231A1A1A" width="400" height="500"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="20" fill="%23E8448A"%3EMalamia%3C/text%3E%3C/svg%3E'}?q=80&fm=webp`}
+              alt={product.name}
+              style={{
+                width: '100%',
+                height: styles.mainImage.height,
+                objectFit: 'cover',
+                display: 'block',
+              } as React.CSSProperties}
+              onError={() => setImageLoadFailed(true)}
+            />
+          ) : (
+            <ExpoImage
+              source={{ uri: product.images[selectedImage] ?? 'https://placehold.co/400x500/1A1A1A/E8448A?text=Malamia' }}
+              style={styles.mainImage}
+              contentFit="cover"
+              transition={200}
+              onError={() => setImageLoadFailed(true)}
+            />
+          )}
           <LinearGradient colors={['rgba(0,0,0,0.5)', 'transparent']} style={styles.imageTopGradient} />
           <SafeAreaView style={styles.backBtn} edges={['top']}>
             <TouchableOpacity style={styles.backCircle} onPress={() => navigation.goBack()}>
@@ -103,11 +120,27 @@ export default function ProductDetailScreen({ route, navigation }: ProductDetail
             >
               {product.images.map((img, i) => (
                 <TouchableOpacity key={i} onPress={() => setSelectedImage(i)}>
-                  <Image
-                    source={{ uri: img }}
-                    style={[styles.thumb, selectedImage === i && styles.thumbActive]}
-                    contentFit="cover"
-                  />
+                  {Platform.OS === 'web' ? (
+                    <img
+                      src={`${img}?q=80&fm=webp`}
+                      alt={`${product.name} ${i + 1}`}
+                      style={{
+                        width: styles.thumb.width,
+                        height: styles.thumb.height,
+                        objectFit: 'cover',
+                        borderRadius: 8,
+                        opacity: selectedImage === i ? 1 : 0.6,
+                        borderWidth: selectedImage === i ? 2 : 1,
+                        borderColor: selectedImage === i ? Colors.primary : Colors.border,
+                      } as React.CSSProperties}
+                    />
+                  ) : (
+                    <ExpoImage
+                      source={{ uri: img }}
+                      style={[styles.thumb, selectedImage === i && styles.thumbActive]}
+                      contentFit="cover"
+                    />
+                  )}
                 </TouchableOpacity>
               ))}
             </ScrollView>
