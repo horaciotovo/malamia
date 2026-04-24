@@ -2,11 +2,10 @@ import { Router, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { body, validationResult } from 'express-validator';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../services/prisma';
 import { requireAuth, AuthRequest } from '../middleware/auth';
 
 const router = Router();
-const prisma = new PrismaClient();
 
 function signTokens(userId: string, email: string, role: string) {
   const accessToken = jwt.sign(

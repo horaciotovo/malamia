@@ -1,9 +1,8 @@
 import { Router, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
 import { requireAuth, AuthRequest } from '../middleware/auth';
+import { prisma } from '../services/prisma';
 
 const router = Router();
-const prisma = new PrismaClient();
 
 // GET /api/loyalty/my-points
 router.get('/my-points', requireAuth, async (req: AuthRequest, res: Response) => {

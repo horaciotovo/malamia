@@ -1,11 +1,10 @@
 import { Router, Response, Request } from 'express';
-import { PrismaClient } from '@prisma/client';
 import { requireAdmin, AuthRequest } from '../middleware/auth';
 import { upload, uploadToCloudinary } from '../middleware/upload';
 import { sendPushNotificationToAll, sendPushNotificationToUsers } from '../services/notificationService';
+import { prisma } from '../services/prisma';
 
 const router = Router();
-const prisma = new PrismaClient();
 
 // All admin routes require ADMIN role
 router.use(requireAdmin);
