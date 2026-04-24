@@ -6,7 +6,6 @@ import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import { router } from './routes';
 import { errorHandler } from './middleware/errorHandler';
-import { prisma } from './services/prisma';
 import crypto from 'crypto';
 
 const app = express();
@@ -86,21 +85,8 @@ app.get('/health', (_req, res) => {
 app.use(errorHandler);
 
 // ─── Server startup ─────────────────────────
-async function startServer() {
-  try {
-    // Test database connection by attempting a simple Prisma query
-    await prisma.user.findFirst({ take: 1 });
-    console.log('✅ Database connected');
-
-    app.listen(PORT, () => {
-      console.log(`🌸 Malamia API running on http://localhost:${PORT}`);
-    });
-  } catch (error) {
-    console.error('❌ Database connection failed:', error instanceof Error ? error.message : error);
-    process.exit(1);
-  }
-}
-
-startServer();
+app.listen(PORT, () => {
+  console.log(`🌸 Malamia API running on http://localhost:${PORT}`);
+});
 
 export default app;
