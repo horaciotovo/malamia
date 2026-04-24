@@ -1,8 +1,18 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Render backend URL
-const BACKEND_URL = process.env.REACT_APP_API_URL || 'https://malamia.onrender.com/api';
+// Determine backend URL based on environment
+const getBackendUrl = () => {
+  // Check if running in web/browser environment
+  if (typeof window !== 'undefined') {
+    // For local development on web: use localhost
+    return 'http://localhost:3001/api';
+  }
+  // For native apps: use the cloud backend or env variable
+  return process.env.REACT_APP_API_URL || 'https://malamia.onrender.com/api';
+};
+
+const BACKEND_URL = getBackendUrl();
 
 const apiClient: AxiosInstance = axios.create({
   baseURL: BACKEND_URL,
