@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 
-const BASE_URL = 'https://natalie-callow-welcomingly.ngrok-free.dev/api';
+// Render backend URL - update this after getting your Render deployment URL
+const BASE_URL = process.env.REACT_APP_API_URL || 'https://malamia-backend.onrender.com/api';
 
 const apiClient: AxiosInstance = axios.create({
   baseURL: BASE_URL,

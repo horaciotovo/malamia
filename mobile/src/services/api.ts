@@ -1,24 +1,14 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BACKEND_URL = 'https://natalie-callow-welcomingly.ngrok-free.dev/api';
-const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
+// Render backend URL - update this after getting your Render deployment URL
+// Format: https://YOUR-SERVICE-NAME.onrender.com/api
+const BACKEND_URL = process.env.REACT_APP_API_URL || 'https://malamia-backend.onrender.com/api';
 
-// Create axios instance with ngrok backend URL
 const apiClient: AxiosInstance = axios.create({
   baseURL: BACKEND_URL,
   timeout: 15000,
   headers: { 'Content-Type': 'application/json' },
-});
-
-// Intercept requests to route through CORS proxy
-apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  // Rebuild full URL and route through proxy
-  const fullUrl = config.baseURL + config.url + (config.params ? '?' + new URLSearchParams(config.params).toString() : '');
-  config.url = CORS_PROXY + encodeURIComponent(fullUrl);
-  config.baseURL = '';
-  config.params = undefined;
-  return config;
 });
 
 // Attach access token to every request
@@ -39,8 +29,7 @@ apiClient.interceptors.response.use(
       original._retry = true;
       try {
         const refreshToken = await AsyncStorage.getItem('refreshToken');
-        const refreshUrl = CORS_PROXY + encodeURIComponent(BACKEND_URL + '/auth/refresh');
-        const { data } = await axios.post(refreshUrl, { refreshToken });
+        const { data } = await axios.post(`${BACKEND_URL}/auth/refresh`, { refreshToken });
         await AsyncStorage.setItem('accessToken', data.data.accessToken);
         original.headers.Authorization = `Bearer ${data.data.accessToken}`;
         return apiClient(original);
