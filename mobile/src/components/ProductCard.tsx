@@ -6,8 +6,9 @@ import {
   StyleSheet,
   Dimensions,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
-import { Image } from 'expo-image';
+import { Image as ExpoImage } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { Product } from '../types';
@@ -35,7 +36,10 @@ export default function ProductCard({ product, onPress, onAddToCart }: ProductCa
     : 0;
 
   const imageUrl = product.images?.[0];
-  const fallbackUrl = 'https://placehold.co/300x300/1A1A1A/E8448A?text=Malamia';
+  const fallbackUrl = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="400"%3E%3Crect fill="%231A1A1A" width="300" height="400"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="20" fill="%23E8448A"%3EMalamia%3C/text%3E%3C/svg%3E';
+
+  // For web, add cache-busting and optimize Unsplash URL
+  const optimizedImageUrl = imageUrl ? `${imageUrl}&q=80&fm=webp` : fallbackUrl;
 
   return (
     <TouchableOpacity
@@ -50,19 +54,42 @@ export default function ProductCard({ product, onPress, onAddToCart }: ProductCa
             <ActivityIndicator size="small" color={Colors.primary} />
           </View>
         )}
-        <Image
-          source={{ uri: imageLoadFailed ? fallbackUrl : (imageUrl || fallbackUrl) }}
-          style={styles.image}
-          contentFit="cover"
-          transition={200}
-          onLoadStart={() => setIsLoadingImage(true)}
-          onLoad={() => setIsLoadingImage(false)}
-          onError={() => {
-            setIsLoadingImage(false);
-            setImageLoadFailed(true);
-          }}
-          cachePolicy="memory-disk"
-        />
+        {Platform.OS === 'web' ? (
+          // Web version with HTML img
+          <img
+            src={imageLoadFailed ? fallbackUrl : optimizedImageUrl}
+            alt={product.name}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              display: 'block',
+            } as React.CSSProperties}
+            onLoadStart={() => setIsLoadingImage(true)}
+            onLoad={() => setIsLoadingImage(false)}
+            onError={() => {
+              setIsLoadingImage(false);
+              if (!imageLoadFailed) {
+                setImageLoadFailed(true);
+              }
+            }}
+          />
+        ) : (
+          // Native version with expo-image
+          <ExpoImage
+            source={{ uri: imageLoadFailed ? fallbackUrl : optimizedImageUrl }}
+            style={styles.image}
+            contentFit="cover"
+            transition={200}
+            onLoadStart={() => setIsLoadingImage(true)}
+            onLoad={() => setIsLoadingImage(false)}
+            onError={() => {
+              setIsLoadingImage(false);
+              setImageLoadFailed(true);
+            }}
+            cachePolicy="memory-disk"
+          />
+        )}
         <LinearGradient
           colors={['transparent', 'rgba(0,0,0,0.4)']}
           style={StyleSheet.absoluteFill}
