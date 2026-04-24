@@ -5,7 +5,7 @@ import { prisma } from '../services/prisma';
 const router = Router();
 
 // POST /api/seed — Initialize admin user (only works if users table is empty)
-router.post('/seed', async (req: Request, res: Response) => {
+router.post('/', async (req: Request, res: Response) => {
   try {
     // Check if users already exist
     const userCount = await prisma.user.count();
