@@ -10,6 +10,9 @@ import { errorHandler } from './middleware/errorHandler';
 const app = express();
 const PORT = process.env.PORT ?? 3001;
 
+// Trust proxy - important for Render and other deployment platforms
+app.set('trust proxy', 1);
+
 // ─── CORS ───────────────────────────────────
 app.use(cors({
   origin: '*',
@@ -41,6 +44,10 @@ const limiter = rateLimit({
   max: 200,
   standardHeaders: true,
   legacyHeaders: false,
+  skip: (req) => {
+    // Skip rate limiting for health checks
+    return req.path === '/health';
+  },
 });
 app.use(limiter);
 
