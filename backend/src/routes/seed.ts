@@ -4,8 +4,33 @@ import { prisma } from '../services/prisma';
 
 const router = Router();
 
+// POST /api/seed/reset — Delete all data and reseed
+router.post('/reset', async (req: Request, res: Response) => {
+  try {
+    console.log('🗑️  Clearing all data...');
+    
+    // Delete all data
+    await prisma.product.deleteMany({});
+    await prisma.category.deleteMany({});
+    await prisma.user.deleteMany({});
+    
+    console.log('✅ All data cleared');
+    
+    // Now seed fresh data by reusing the seed logic
+    req.url = '/'; // Trick to call the main seed logic
+    seedDatabase(req, res);
+  } catch (error) {
+    console.error('❌ Reset failed:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to reset database',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
 // POST /api/seed — Full database seeding (admin user, categories, products)
-router.post('/', async (req: Request, res: Response) => {
+async function seedDatabase(req: Request, res: Response) {
   try {
     console.log('🌱 Starting full database seed...');
     
@@ -53,7 +78,7 @@ router.post('/', async (req: Request, res: Response) => {
     }
     console.log(`✅ ${categoriesCreated} categories created`);
 
-    // ── Products (20+ items) ────────────────────────────────────────────────
+    // ── Products (25+ items) ────────────────────────────────────────────────
     const productsData = [
       // Remeras
       { name: 'Remera Blanca Clásica', price: 29.99, compareAtPrice: 39.99, categorySlug: 'remeras', images: ['https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600'], stock: 100, isFeatured: true },
@@ -135,6 +160,8 @@ router.post('/', async (req: Request, res: Response) => {
       error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
-});
+}
+
+router.post('/', seedDatabase);
 
 export default router;
