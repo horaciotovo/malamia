@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 
-// Render backend URL - update this after getting your Render deployment URL
-const BASE_URL = process.env.REACT_APP_API_URL || 'https://malamia-backend.onrender.com/api';
+// Render backend URL
+const BASE_URL = process.env.REACT_APP_API_URL || 'https://malamia.onrender.com/api';
 
 const apiClient: AxiosInstance = axios.create({
   baseURL: BASE_URL,

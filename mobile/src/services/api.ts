@@ -1,9 +1,8 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Render backend URL - update this after getting your Render deployment URL
-// Format: https://YOUR-SERVICE-NAME.onrender.com/api
-const BACKEND_URL = process.env.REACT_APP_API_URL || 'https://malamia-backend.onrender.com/api';
+// Render backend URL
+const BACKEND_URL = process.env.REACT_APP_API_URL || 'https://malamia.onrender.com/api';
 
 const apiClient: AxiosInstance = axios.create({
   baseURL: BACKEND_URL,
