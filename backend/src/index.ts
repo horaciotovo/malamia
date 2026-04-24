@@ -88,15 +88,15 @@ app.use(errorHandler);
 // ─── Server startup ─────────────────────────
 async function startServer() {
   try {
-    // Test database connection
-    await prisma.$queryRaw`SELECT 1`;
+    // Test database connection by attempting a simple Prisma query
+    await prisma.user.findFirst({ take: 1 });
     console.log('✅ Database connected');
 
     app.listen(PORT, () => {
       console.log(`🌸 Malamia API running on http://localhost:${PORT}`);
     });
   } catch (error) {
-    console.error('❌ Failed to start server:', error);
+    console.error('❌ Database connection failed:', error instanceof Error ? error.message : error);
     process.exit(1);
   }
 }
