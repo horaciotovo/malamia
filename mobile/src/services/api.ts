@@ -1,15 +1,24 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Use CORS proxy to bypass ngrok header stripping
 const BACKEND_URL = 'https://natalie-callow-welcomingly.ngrok-free.dev/api';
-const CORS_PROXY = 'https://corsproxy.io/?';
-const BASE_URL = CORS_PROXY + encodeURIComponent(BACKEND_URL);
+const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
 
+// Create axios instance with ngrok backend URL
 const apiClient: AxiosInstance = axios.create({
-  baseURL: BASE_URL,
+  baseURL: BACKEND_URL,
   timeout: 15000,
   headers: { 'Content-Type': 'application/json' },
+});
+
+// Intercept requests to route through CORS proxy
+apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+  // Rebuild full URL and route through proxy
+  const fullUrl = config.baseURL + config.url + (config.params ? '?' + new URLSearchParams(config.params).toString() : '');
+  config.url = CORS_PROXY + encodeURIComponent(fullUrl);
+  config.baseURL = '';
+  config.params = undefined;
+  return config;
 });
 
 // Attach access token to every request
@@ -30,7 +39,8 @@ apiClient.interceptors.response.use(
       original._retry = true;
       try {
         const refreshToken = await AsyncStorage.getItem('refreshToken');
-        const { data } = await axios.post(`${BASE_URL}/auth/refresh`, { refreshToken });
+        const refreshUrl = CORS_PROXY + encodeURIComponent(BACKEND_URL + '/auth/refresh');
+        const { data } = await axios.post(refreshUrl, { refreshToken });
         await AsyncStorage.setItem('accessToken', data.data.accessToken);
         original.headers.Authorization = `Bearer ${data.data.accessToken}`;
         return apiClient(original);
