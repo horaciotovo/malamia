@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body, #root {
+    height: 100%;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    background-color: #0A0B0E;
+    color: #ffffff;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #111827;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #374151;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #E8448A;
+  }
+}
+
+@layer components {
+  .input-base {
+    @apply w-full bg-surface-secondary border border-gray-700 rounded-lg px-4 py-2.5 !text-white text-sm placeholder-gray-300 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors;
+  }
+  .btn-primary {
+    @apply bg-primary hover:bg-primary-dark text-white font-semibold px-5 py-2.5 rounded-lg transition-all shadow-pink hover:shadow-pink-lg disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-ghost {
+    @apply text-gray-400 hover:text-white px-4 py-2 rounded-lg hover:bg-surface-secondary transition-colors;
+  }
+  .card {
+    @apply bg-surface-card rounded-xl border border-gray-800/60;
+  }
+  .badge-pink {
+    @apply bg-primary/10 text-primary text-xs font-semibold px-2.5 py-1 rounded-full;
+  }
+}

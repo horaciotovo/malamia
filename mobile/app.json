@@ -1,0 +1,46 @@
+{
+  "expo": {
+    "name": "Malamia",
+    "slug": "malamia",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0A0A0A"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.malamia.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Malamia needs camera access for profile photos.",
+        "NSPhotoLibraryUsageDescription": "Malamia needs photo library access for profile photos."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0A0A0A"
+      },
+      "package": "com.malamia.app",
+      "permissions": [
+        "NOTIFICATIONS",
+        "RECEIVE_BOOT_COMPLETED",
+        "VIBRATE"
+      ]
+    },
+    "plugins": [],
+    "extra": {
+      "apiBaseUrl": "http://localhost:3001/api",
+      "eas": {
+        "projectId": "efe886e2-8fdd-4913-a7ca-0feff57667af"
+      }
+    },
+    "owner": "htovo"
+  }
+}

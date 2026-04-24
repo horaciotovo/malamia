@@ -1,0 +1,10 @@
+{
+  "name": "malamia",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:backoffice": "npm run dev --prefix backoffice",
+    "dev:mobile": "npm start --prefix mobile"
+  }
+}
