@@ -3,8 +3,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Determine backend URL based on environment
 const getBackendUrl = () => {
-  // Always use localhost for development
-  return 'http://localhost:3001/api';
+  // In browser context, use 127.0.0.1 instead of localhost
+  return 'http://127.0.0.1:3001/api';
 };
 
 const BACKEND_URL = getBackendUrl();

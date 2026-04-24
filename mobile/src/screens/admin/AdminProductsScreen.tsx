@@ -8,9 +8,9 @@ import { Product } from '../../types';
 import { AdminProductsProps } from '../../navigation/types';
 import { useAuthStore } from '../../store/authStore';
 
-// Derive backoffice URL - use localhost for development
+// Derive backoffice URL - use 127.0.0.1 for browser
 const getBackofficeUrl = () => {
-  return 'http://localhost:5173';
+  return 'http://127.0.0.1:5173';
 };
 
 const BACKOFFICE_URL = getBackofficeUrl();
