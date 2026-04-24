@@ -6,9 +6,22 @@ import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import { router } from './routes';
 import { errorHandler } from './middleware/errorHandler';
+import crypto from 'crypto';
 
 const app = express();
 const PORT = process.env.PORT ?? 3001;
+
+// ─── Security Configuration ─────────────────
+// Generate JWT secrets if not provided (for development/initial setup)
+if (!process.env.JWT_SECRET) {
+  process.env.JWT_SECRET = crypto.randomBytes(32).toString('hex');
+  console.warn('⚠️  JWT_SECRET not set, using generated value. Set JWT_SECRET env var for production.');
+}
+
+if (!process.env.JWT_REFRESH_SECRET) {
+  process.env.JWT_REFRESH_SECRET = crypto.randomBytes(32).toString('hex');
+  console.warn('⚠️  JWT_REFRESH_SECRET not set, using generated value. Set JWT_REFRESH_SECRET env var for production.');
+}
 
 // Trust proxy - important for Render and other deployment platforms
 app.set('trust proxy', 1);
