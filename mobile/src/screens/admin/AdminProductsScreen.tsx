@@ -16,7 +16,7 @@ const getBackofficeUrl = () => {
     if (typeof window !== 'undefined') {
       // If deployed to Netlify, use the backoffice Netlify URL
       // Deployed backoffice URL (update if using different domain)
-      return 'https://malamia-backoffice.netlify.app';
+      return 'https://malamiabackoffice.netlify.app';
     }
   }
   // Fallback for local development
