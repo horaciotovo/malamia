@@ -8,9 +8,9 @@ import { Product } from '../../types';
 import { AdminProductsProps } from '../../navigation/types';
 import { useAuthStore } from '../../store/authStore';
 
-// Derive backoffice URL - use 127.0.0.1 for browser
+// Derive backoffice URL - use your computer's IP address for mobile access
 const getBackofficeUrl = () => {
-  return 'http://127.0.0.1:5173';
+  return 'http://192.168.0.3:5173';
 };
 
 const BACKOFFICE_URL = getBackofficeUrl();
@@ -18,7 +18,7 @@ const BACKOFFICE_URL = getBackofficeUrl();
 export default function AdminProductsScreen({ navigation }: AdminProductsProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const { token } = useAuthStore();
+  const { accessToken } = useAuthStore();
 
   useEffect(() => {
     loadProducts();
@@ -58,7 +58,7 @@ export default function AdminProductsScreen({ navigation }: AdminProductsProps) 
       <TouchableOpacity 
         style={styles.addButton}
         onPress={() => {
-          const url = `${BACKOFFICE_URL}/admin/products?token=${token}`;
+          const url = `${BACKOFFICE_URL}/admin/products?token=${accessToken}`;
           Linking.openURL(url).catch(err => 
             Alert.alert('Error', 'Could not open web admin. Make sure the backoffice URL is correct.')
           );
@@ -72,7 +72,7 @@ export default function AdminProductsScreen({ navigation }: AdminProductsProps) 
       <View style={styles.productsContainer}>
         {products.length === 0 ? (
           <View style={styles.emptyState}>
-            <MaterialCommunityIcons name="package-open" size={48} color={Colors.textTertiary} />
+            <MaterialCommunityIcons name="package-down" size={48} color={Colors.textTertiary} />
             <Text style={styles.emptyText}>No products yet</Text>
           </View>
         ) : (
@@ -116,7 +116,7 @@ export default function AdminProductsScreen({ navigation }: AdminProductsProps) 
               <TouchableOpacity 
                 style={styles.editButton}
                 onPress={() => {
-                  const url = `${BACKOFFICE_URL}/admin/products?token=${token}&productId=${product.id}`;
+                  const url = `${BACKOFFICE_URL}/admin/products?token=${accessToken}&productId=${product.id}`;
                   Linking.openURL(url).catch(err =>
                     Alert.alert('Error', 'Could not open web admin')
                   );

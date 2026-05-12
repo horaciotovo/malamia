@@ -20,52 +20,123 @@ malamia/
 
 ### Prerequisites
 - Node.js >= 18
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (for the local PostgreSQL database)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (running)
 - [Expo CLI](https://docs.expo.dev/get-started/installation/): `npm i -g expo-cli`
 - A [Cloudinary](https://cloudinary.com/) account (image uploads)
 - A [Firebase](https://firebase.google.com/) project (push notifications)
 
-### Install & Run
+### Deploy the App (2 steps)
 
+#### Step 1: Start Backend + Database + Backoffice
 ```bash
-# 1. Install all workspace dependencies
-npm install
+# From project root
+docker-compose up --build
+```
 
-# 2. Configure environment variables
-cp backend/.env.example backend/.env
-# → fill in JWT secret, Cloudinary & Firebase credentials
-# → DATABASE_URL is pre-filled for the Docker Compose database below
+This starts:
+- 🗄️ **PostgreSQL** database (port 5432)
+- 🔌 **Backend API** (port 3001) — http://localhost:3001/api
+- 📊 **Backoffice Admin** (port 5173) — http://localhost:5173
 
-# 3. Start the database
-docker compose up -d
+**First time only:** Database will auto-migrate and seed sample data.
 
-# 4. Run DB migrations
-cd backend && npx prisma migrate dev --name init
+#### Step 2: Start Mobile App (in new terminal)
+```bash
+cd mobile
+npm install  # if needed
+npm start
+```
 
-# 5. Start everything in separate terminals
-cd backend    && npm run dev        # API on http://localhost:3001
-cd backoffice && npm run dev        # Backoffice on http://localhost:5173
-cd mobile     && npm start          # Expo dev server
+Then:
+1. Scan the **QR code** with **Expo Go** app on your phone
+2. Login with default credentials:
+   - Email: `htovoadmin@gmail.com`
+   - Password: `admin123456`
+
+---
+
+### That's it! 🎉
+
+| Service | URL | Status |
+|---------|-----|--------|
+| 📊 Backoffice | http://localhost:5173 | Running in Docker |
+| 🔌 Backend API | http://localhost:3001/api | Running in Docker |
+| 📱 Mobile App | Scan QR code | Running locally |
+| 🗄️ Database | localhost:5432 | Running in Docker |
+
+---
+
+### Configuration
+
+**First time setup:**
+```bash
+# Copy env template (optional)
+cp .env.example .env
+
+# Add your Cloudinary & Firebase credentials to:
+# backend/.env (for image uploads and push notifications)
+```
+
+**Stop all services:**
+```bash
+docker-compose down
+```
+
+**View logs:**
+```bash
+docker-compose logs -f
 ```
 
 ### Database (Docker)
 
-The `docker-compose.yml` at the repo root runs **PostgreSQL 16** locally.
+The `docker-compose.yml` runs **PostgreSQL 16** automatically.
 
-| | |
+| Property | Value |
 |---|---|
 | Host | `localhost:5432` |
 | Database | `malamia_db` |
 | User | `malamia` |
 | Password | `malamia_secret` |
 
+**Database commands:**
 ```bash
-docker compose up -d      # start (data persists in Docker volume)
-docker compose stop       # stop (data is kept)
-docker compose down -v    # destroy including all data
+# View all running services
+docker-compose ps
+
+# Access database with psql
+docker-compose exec postgres psql -U malamia -d malamia_db
+
+# View data with Prisma Studio
+docker-compose exec backend npm run db:studio
+
+# Seed database with sample data
+docker-compose exec backend npm run db:seed
+
+# Reset database (delete all data)
+docker-compose down -v
+docker-compose up
 ```
 
-> The `DATABASE_URL` in `backend/.env` is already set to these credentials.
+---
+
+### User Management
+
+**List all admin users:**
+```bash
+docker-compose exec backend node scripts/list-admins.js
+```
+
+**Reset admin password:**
+```bash
+docker-compose exec backend node scripts/reset-password.js <email> <password>
+# Example:
+docker-compose exec backend node scripts/reset-password.js htovoadmin@gmail.com admin123456
+```
+
+**Promote user to admin:**
+```bash
+docker-compose exec backend node scripts/promote-admin.js <email>
+```
 
 ---
 

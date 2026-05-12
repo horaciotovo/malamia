@@ -37,7 +37,7 @@
     },
     "plugins": [],
     "extra": {
-      "apiBaseUrl": "http://localhost:3001/api",
+      "apiBaseUrl": "http://192.168.0.3:3001/api",
       "eas": {
         "projectId": "efe886e2-8fdd-4913-a7ca-0feff57667af"
       }

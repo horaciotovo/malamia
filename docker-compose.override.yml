@@ -1,0 +1,18 @@
+# docker-compose.override.yml — Development overrides
+# This file is automatically loaded by docker-compose and overrides settings for local development
+# You don't need to change this file unless you want custom local settings
+
+services:
+  backend:
+    # In development, watch for file changes
+    environment:
+      NODE_ENV: development
+      # Add your local overrides here if needed
+    # Uncomment to rebuild on every start (slower but ensures latest build)
+    # build:
+    #   cache_from: []
+
+  backoffice:
+    # In development, watch for file changes
+    environment:
+      NODE_ENV: development

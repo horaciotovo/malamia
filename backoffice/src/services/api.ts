@@ -1,7 +1,8 @@
 import axios, { AxiosInstance } from 'axios';
 
 // Local backend URL for development
-const BASE_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:3001/api';
+// Use Vite environment variables with fallback
+const BASE_URL = (import.meta.env.VITE_API_URL as string) || 'http://192.168.0.3:3001/api';
 
 const apiClient: AxiosInstance = axios.create({
   baseURL: BASE_URL,

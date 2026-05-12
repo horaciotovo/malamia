@@ -3,8 +3,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Determine backend URL based on environment
 const getBackendUrl = () => {
-  // In browser context, use 127.0.0.1 instead of localhost
-  return 'http://127.0.0.1:3001/api';
+  // Use your computer's IP address for mobile/Expo Go access
+  // Update 192.168.0.3 if your IP changes
+  return 'http://192.168.0.3:3001/api';
 };
 
 const BACKEND_URL = getBackendUrl();

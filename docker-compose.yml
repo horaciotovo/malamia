@@ -1,23 +1,86 @@
-version: '3.9'
-
 services:
+  # ─────────────────────────────────────────────
+  # PostgreSQL Database
+  # ─────────────────────────────────────────────
   postgres:
     image: postgres:16-alpine
     container_name: malamia_postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: malamia
-      POSTGRES_PASSWORD: malamia_secret
-      POSTGRES_DB: malamia_db
+      POSTGRES_USER: ${DB_USER:-malamia}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-malamia_secret}
+      POSTGRES_DB: ${DB_NAME:-malamia_db}
     ports:
-      - '5432:5432'
+      - '${DB_PORT:-5432}:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U malamia -d malamia_db']
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER:-malamia} -d ${DB_NAME:-malamia_db}']
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - malamia_network
+
+  # ─────────────────────────────────────────────
+  # Express Backend API
+  # ─────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: malamia_backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: ${BACKEND_PORT:-3001}
+      DATABASE_URL: postgresql://${DB_USER:-malamia}:${DB_PASSWORD:-malamia_secret}@postgres:5432/${DB_NAME:-malamia_db}?schema=public&sslmode=disable
+      JWT_SECRET: ${JWT_SECRET:-your_super_secret_jwt_key_change_this}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-your_super_secret_refresh_key}
+      JWT_EXPIRES_IN: 15m
+      JWT_REFRESH_EXPIRES_IN: 7d
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:-}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:-}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:-}
+      FIREBASE_SERVICE_ACCOUNT_PATH: ./firebase-service-account.json
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:5173,http://localhost:3000,http://localhost:8081}
+      POINTS_PER_PURCHASE_DOLLAR: 1
+    ports:
+      - '${BACKEND_PORT:-3001}:${BACKEND_PORT:-3001}'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./backend/src:/app/src
+      - ./backend/prisma:/app/prisma
+    networks:
+      - malamia_network
+
+  # ─────────────────────────────────────────────
+  # Vite Backoffice (React Admin Panel)
+  # ─────────────────────────────────────────────
+  backoffice:
+    build:
+      context: ./backoffice
+      dockerfile: Dockerfile
+    container_name: malamia_backoffice
+    restart: unless-stopped
+    environment:
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:3001/api}
+    ports:
+      - '${BACKOFFICE_PORT:-5173}:5173'
+    depends_on:
+      - backend
+    volumes:
+      - ./backoffice/src:/app/src
+      - ./backoffice/index.html:/app/index.html
+    networks:
+      - malamia_network
+
+networks:
+  malamia_network:
+    driver: bridge
 
 volumes:
   postgres_data:
+    driver: local
