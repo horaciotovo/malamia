@@ -10,10 +10,10 @@ import { AdminNotificationsProps } from '../../navigation/types';
 type NotifType = 'NEW_PRODUCT' | 'PRICE_CHANGE' | 'PROMOTION' | 'ORDER_UPDATE';
 
 const TYPES: { value: NotifType; label: string; icon: string; color: string }[] = [
-  { value: 'NEW_PRODUCT', label: 'New Product', icon: 'star', color: '#EC4899' },
-  { value: 'PRICE_CHANGE', label: 'Price Change', icon: 'tag', color: '#F59E0B' },
-  { value: 'PROMOTION', label: 'Promotion', icon: 'gift', color: '#10B981' },
-  { value: 'ORDER_UPDATE', label: 'Order Update', icon: 'package', color: '#3B82F6' },
+  { value: 'NEW_PRODUCT', label: 'Nuevo Producto', icon: 'star', color: '#EC4899' },
+  { value: 'PRICE_CHANGE', label: 'Cambio de Precio', icon: 'tag', color: '#F59E0B' },
+  { value: 'PROMOTION', label: 'Promoción', icon: 'gift', color: '#10B981' },
+  { value: 'ORDER_UPDATE', label: 'Actualización de Pedido', icon: 'package', color: '#3B82F6' },
 ];
 
 export default function AdminNotificationsScreen({ navigation }: AdminNotificationsProps) {
@@ -45,7 +45,7 @@ export default function AdminNotificationsScreen({ navigation }: AdminNotificati
 
   const handleSend = async () => {
     if (!form.title.trim() || !form.body.trim()) {
-      Alert.alert('Please fill in title and message');
+      Alert.alert('Por favor completa el título y el mensaje');
       return;
     }
 
@@ -60,10 +60,10 @@ export default function AdminNotificationsScreen({ navigation }: AdminNotificati
       setForm({ title: '', body: '', type: 'PROMOTION' });
       setShowForm(false);
       await loadNotifications();
-      Alert.alert('✅ Notification sent!');
+      Alert.alert('✅ ¡Notificación enviada!');
     } catch (err) {
       console.error('Send error:', err);
-      Alert.alert('Failed to send notification');
+      Alert.alert('Fallo al enviar la notificación');
     } finally {
       setSending(false);
     }
@@ -84,7 +84,7 @@ export default function AdminNotificationsScreen({ navigation }: AdminNotificati
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <MaterialCommunityIcons name="arrow-left" size={24} color={Colors.primary} />
         </TouchableOpacity>
-        <Text style={styles.title}>Push Notifications</Text>
+        <Text style={styles.title}>Notificaciones Push</Text>
         <View style={{ width: 24 }} />
       </View>
 
@@ -92,17 +92,17 @@ export default function AdminNotificationsScreen({ navigation }: AdminNotificati
       {!showForm && (
         <TouchableOpacity style={styles.sendButton} onPress={() => setShowForm(true)}>
           <MaterialCommunityIcons name="plus" size={20} color={Colors.background} />
-          <Text style={styles.sendButtonText}>Send Notification</Text>
+          <Text style={styles.sendButtonText}>Enviar Notificación</Text>
         </TouchableOpacity>
       )}
 
       {/* Send Form */}
       {showForm && (
         <View style={styles.form}>
-          <Text style={styles.formTitle}>📤 New Notification</Text>
+          <Text style={styles.formTitle}>📤 Nueva Notificación</Text>
 
-          {/* Type Selector */}
-          <Text style={styles.label}>Type</Text>
+          {/* Tipo Selector */}
+          <Text style={styles.label}>Tipo</Text>
           <View style={styles.typeGrid}>
             {TYPES.map((t) => (
               <TouchableOpacity
@@ -127,21 +127,21 @@ export default function AdminNotificationsScreen({ navigation }: AdminNotificati
             ))}
           </View>
 
-          {/* Title */}
-          <Text style={styles.label}>Title *</Text>
+          {/* Título */}
+          <Text style={styles.label}>Título *</Text>
           <TextInput
             style={styles.input}
-            placeholder="e.g., New Rose Serum arrived!"
+            placeholder="p.ej., ¡Nuevo Suero Rose llegó!"
             placeholderTextColor={Colors.textTertiary}
             value={form.title}
             onChangeText={(text) => setForm({ ...form, title: text })}
           />
 
-          {/* Message */}
-          <Text style={styles.label}>Message *</Text>
+          {/* Mensaje */}
+          <Text style={styles.label}>Mensaje *</Text>
           <TextInput
             style={[styles.input, styles.textArea]}
-            placeholder="Write your notification message..."
+            placeholder="Escribe tu mensaje de notificación..."
             placeholderTextColor={Colors.textTertiary}
             value={form.body}
             onChangeText={(text) => setForm({ ...form, body: text })}
@@ -149,12 +149,12 @@ export default function AdminNotificationsScreen({ navigation }: AdminNotificati
             numberOfLines={4}
           />
 
-          {/* Target */}
+          {/* Objetivo */}
           <View style={styles.targetSwitch}>
             <View>
-              <Text style={styles.label}>Target Audience</Text>
+              <Text style={styles.label}>Audiencia Objetivo</Text>
               <Text style={styles.targetLabel}>
-                {targetAll ? 'All Customers' : 'Specific Customers'}
+                {targetAll ? 'Todos los Clientes' : 'Clientes Específicos'}
               </Text>
             </View>
             <Switch
@@ -171,7 +171,7 @@ export default function AdminNotificationsScreen({ navigation }: AdminNotificati
               style={[styles.button, styles.cancelButton]}
               onPress={() => setShowForm(false)}
             >
-              <Text style={styles.cancelButtonText}>Cancel</Text>
+              <Text style={styles.cancelButtonText}>Cancelar</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.button, styles.submitButton]}
@@ -180,7 +180,7 @@ export default function AdminNotificationsScreen({ navigation }: AdminNotificati
             >
               <MaterialCommunityIcons name="send" size={18} color={Colors.background} />
               <Text style={styles.submitButtonText}>
-                {sending ? 'Sending...' : 'Send'}
+                {sending ? 'Enviando...' : 'Enviar'}
               </Text>
             </TouchableOpacity>
           </View>
@@ -191,11 +191,11 @@ export default function AdminNotificationsScreen({ navigation }: AdminNotificati
       {notifications.length === 0 ? (
         <View style={styles.emptyState}>
           <MaterialCommunityIcons name="bell-off" size={48} color={Colors.textTertiary} />
-          <Text style={styles.emptyText}>No notifications sent yet</Text>
+          <Text style={styles.emptyText}¡Sin notificaciones enviadas aún</Text>
         </View>
       ) : (
         <View style={styles.historyContainer}>
-          <Text style={styles.historyTitle}>Recent Notifications</Text>
+          <Text style={styles.historyTitle}>Notificaciones Recientes</Text>
           {notifications.slice(0, 5).map((notif) => (
             <View key={notif.id} style={styles.notifCard}>
               <View

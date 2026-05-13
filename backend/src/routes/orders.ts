@@ -124,4 +124,134 @@ router.get('/:id', async (req: AuthRequest, res: Response) => {
   });
 });
 
+// PUT /api/orders/:id — update order items
+router.put('/:id', async (req: AuthRequest, res: Response) => {
+  const orderId = req.params.id;
+  const userId = req.user!.id;
+  const { items } = req.body;
+
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+    include: { items: { include: { product: true } } },
+  });
+
+  if (!order || order.userId !== userId) {
+    res.status(404).json({ success: false, message: 'Order not found.' });
+    return;
+  }
+
+  if (order.status && order.status.toUpperCase() !== 'PENDING') {
+    res.status(400).json({ success: false, message: 'Cannot edit non-pending orders.' });
+    return;
+  }
+
+  if (!Array.isArray(items) || items.length === 0) {
+    res.status(400).json({ success: false, message: 'Items cannot be empty.' });
+    return;
+  }
+
+  // Validate stock for updated items
+  const oldItems = order.items;
+  for (const newItem of items) {
+    const oldItem = oldItems.find((i) => i.productId === newItem.productId);
+    const quantityDiff = newItem.quantity - (oldItem?.quantity || 0);
+    if (quantityDiff > 0 && newItem.product.stock < quantityDiff) {
+      res.status(400).json({
+        success: false,
+        message: `"${newItem.product.name}" has insufficient stock for the requested quantity.`,
+      });
+      return;
+    }
+  }
+
+  const updatedOrder = await prisma.$transaction(async (tx) => {
+    // Restore stock for old items
+    for (const oldItem of oldItems) {
+      await tx.product.update({
+        where: { id: oldItem.productId },
+        data: { stock: { increment: oldItem.quantity } },
+      });
+    }
+
+    // Delete old items
+    await tx.orderItem.deleteMany({ where: { orderId } });
+
+    // Calculate new total
+    const newTotalAmount = items.reduce(
+      (sum: number, item: any) => sum + Number(item.price) * item.quantity,
+      0,
+    );
+
+    // Create new items
+    const result = await tx.order.update({
+      where: { id: orderId },
+      data: {
+        totalAmount: newTotalAmount,
+        items: {
+          create: items.map((item: any) => ({
+            productId: item.productId,
+            quantity: item.quantity,
+            price: item.price,
+          })),
+        },
+      },
+      include: { items: { include: { product: true } } },
+    });
+
+    // Decrement stock for new items
+    for (const item of items) {
+      await tx.product.update({
+        where: { id: item.productId },
+        data: { stock: { decrement: item.quantity } },
+      });
+    }
+
+    return result;
+  });
+
+  res.json({
+    success: true,
+    data: { ...updatedOrder, totalAmount: Number(updatedOrder.totalAmount) },
+  });
+});
+
+// DELETE /api/orders/:id — delete order
+router.delete('/:id', async (req: AuthRequest, res: Response) => {
+  const orderId = req.params.id;
+  const userId = req.user!.id;
+
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+    include: { items: { include: { product: true } } },
+  });
+
+  if (!order || order.userId !== userId) {
+    res.status(404).json({ success: false, message: 'Order not found.' });
+    return;
+  }
+
+  if (order.status && order.status.toUpperCase() !== 'PENDING') {
+    res.status(400).json({ success: false, message: 'Cannot delete non-pending orders.' });
+    return;
+  }
+
+  await prisma.$transaction(async (tx) => {
+    // Restore stock for all items
+    for (const item of order.items) {
+      await tx.product.update({
+        where: { id: item.productId },
+        data: { stock: { increment: item.quantity } },
+      });
+    }
+
+    // Delete order items
+    await tx.orderItem.deleteMany({ where: { orderId } });
+
+    // Delete order
+    await tx.order.delete({ where: { id: orderId } });
+  });
+
+  res.json({ success: true, message: 'Order deleted successfully.' });
+});
+
 export default router;

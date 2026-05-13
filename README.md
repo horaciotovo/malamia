@@ -27,6 +27,11 @@ malamia/
 
 ### Deploy the App (2 steps)
 
+#### 📱 Want to test on iPhone? 
+See **[LOCAL_DEPLOYMENT.md](./LOCAL_DEPLOYMENT.md)** for step-by-step setup with network access.
+
+Quick start: `.\start-local-dev.ps1` (Windows) or `./start-local-dev.sh` (Mac/Linux)
+
 #### Step 1: Start Backend + Database + Backoffice
 ```bash
 # From project root

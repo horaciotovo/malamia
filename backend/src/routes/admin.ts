@@ -71,90 +71,134 @@ router.get('/products/:id', async (req: Request, res: Response) => {
 });
 
 router.post('/products', upload.array('images', 8), async (req: AuthRequest, res: Response) => {
-  const { name, description, price, compareAtPrice, categoryId, stock, isFeatured, isPublished, tags } = req.body as {
-    name: string; description: string; price: string; compareAtPrice?: string;
-    categoryId: string; stock: string; isFeatured?: string; isPublished?: string; tags?: string;
-  };
+  try {
+    const { name, description, price, compareAtPrice, categoryId, stock, isFeatured, isPublished, tags } = req.body as {
+      name: string; description: string; price: string; compareAtPrice?: string;
+      categoryId: string; stock: string; isFeatured?: string; isPublished?: string; tags?: string;
+    };
 
-  const files = req.files as Express.Multer.File[];
-  const imageUrls: string[] = [];
-  for (const file of files) {
-    const { url } = await uploadToCloudinary(file.buffer, 'malamia/products');
-    imageUrls.push(url);
+    const files = req.files as Express.Multer.File[];
+    const imageUrls: string[] = [];
+    
+    for (const file of files) {
+      try {
+        const { url } = await uploadToCloudinary(file.buffer, 'malamia/products');
+        imageUrls.push(url);
+      } catch (uploadError) {
+        console.error(`❌ Failed to upload image ${file.originalname}:`, uploadError);
+        return res.status(400).json({ 
+          success: false, 
+          message: `Failed to upload image: ${uploadError instanceof Error ? uploadError.message : 'Unknown error'}` 
+        });
+      }
+    }
+
+    const prevPrice = compareAtPrice ? parseFloat(compareAtPrice) : undefined;
+    const product = await prisma.product.create({
+      data: {
+        name, description, price: parseFloat(price),
+        compareAtPrice: prevPrice, categoryId,
+        stock: parseInt(stock), isFeatured: isFeatured === 'true',
+        isPublished: isPublished === 'true',
+        images: imageUrls,
+        tags: tags ? JSON.parse(tags) : [],
+      },
+      include: { category: true },
+    });
+
+    // Send response immediately
+    res.status(201).json({ success: true, data: { ...product, price: Number(product.price) } });
+
+    // Send push notification if published (fire-and-forget, isolated from request/response)
+    if (product.isPublished) {
+      setImmediate(() => {
+        sendPushNotificationToAll({
+          title: '✨ New Product',
+          body: `Check out our new ${product.name}!`,
+          type: 'NEW_PRODUCT',
+          data: { productId: product.id },
+          createdBy: req.user!.id,
+        }).catch(err => console.error('❌ Failed to send new product notification:', err));
+      });
+    }
+  } catch (error) {
+    console.error('❌ Error creating product:', error);
+    if (!res.headersSent) {
+      res.status(500).json({ 
+        success: false, 
+        message: `Failed to create product: ${error instanceof Error ? error.message : 'Unknown error'}` 
+      });
+    }
   }
-
-  const prevPrice = compareAtPrice ? parseFloat(compareAtPrice) : undefined;
-  const product = await prisma.product.create({
-    data: {
-      name, description, price: parseFloat(price),
-      compareAtPrice: prevPrice, categoryId,
-      stock: parseInt(stock), isFeatured: isFeatured === 'true',
-      isPublished: isPublished === 'true',
-      images: imageUrls,
-      tags: tags ? JSON.parse(tags) : [],
-    },
-    include: { category: true },
-  });
-
-  // Send push notification if published
-  if (product.isPublished) {
-    sendPushNotificationToAll({
-      title: '✨ New Arrival!',
-      body: `${product.name} is now available.`,
-      type: 'NEW_PRODUCT',
-      data: { productId: product.id },
-      createdBy: req.user!.id,
-    }).catch(console.error);
-  }
-
-  res.status(201).json({ success: true, data: { ...product, price: Number(product.price) } });
 });
 
 router.put('/products/:id', upload.array('images', 8), async (req: AuthRequest, res: Response) => {
-  const existing = await prisma.product.findUnique({ where: { id: req.params.id } });
-  if (!existing) { res.status(404).json({ success: false, message: 'Product not found.' }); return; }
+  try {
+    const existing = await prisma.product.findUnique({ where: { id: req.params.id } });
+    if (!existing) { res.status(404).json({ success: false, message: 'Product not found.' }); return; }
 
-  const { name, description, price, compareAtPrice, categoryId, stock, isFeatured, isPublished, tags, existingImages } =
-    req.body as Record<string, string>;
+    const { name, description, price, compareAtPrice, categoryId, stock, isFeatured, isPublished, tags, existingImages } =
+      req.body as Record<string, string>;
 
-  const files = req.files as Express.Multer.File[];
-  const newImageUrls: string[] = [];
-  for (const file of files) {
-    const { url } = await uploadToCloudinary(file.buffer, 'malamia/products');
-    newImageUrls.push(url);
+    const files = req.files as Express.Multer.File[];
+    const newImageUrls: string[] = [];
+    
+    for (const file of files) {
+      try {
+        const { url } = await uploadToCloudinary(file.buffer, 'malamia/products');
+        newImageUrls.push(url);
+      } catch (uploadError) {
+        console.error(`❌ Failed to upload image ${file.originalname}:`, uploadError);
+        return res.status(400).json({ 
+          success: false, 
+          message: `Failed to upload image: ${uploadError instanceof Error ? uploadError.message : 'Unknown error'}` 
+        });
+      }
+    }
+
+    const keptImages: string[] = existingImages ? JSON.parse(existingImages) : [];
+    const images = [...keptImages, ...newImageUrls];
+
+    const newPrice = price ? parseFloat(price) : Number(existing.price);
+    const priceChanged = newPrice !== Number(existing.price);
+
+    const updated = await prisma.product.update({
+      where: { id: req.params.id },
+      data: {
+        name, description, price: newPrice,
+        compareAtPrice: compareAtPrice ? parseFloat(compareAtPrice) : undefined,
+        categoryId, stock: stock ? parseInt(stock) : undefined,
+        isFeatured: isFeatured === 'true',
+        isPublished: isPublished === 'true',
+        images,
+        tags: tags ? JSON.parse(tags) : existing.tags,
+      },
+    });
+
+    // Send response immediately
+    res.json({ success: true, data: { ...updated, price: Number(updated.price) } });
+
+    // Notify on price change (fire-and-forget, isolated from request/response)
+    if (priceChanged && updated.isPublished) {
+      setImmediate(() => {
+        sendPushNotificationToAll({
+          title: '🏷️ Price Update',
+          body: `${updated.name} is now $${newPrice.toFixed(2)}.`,
+          type: 'PRICE_CHANGE',
+          data: { productId: updated.id },
+          createdBy: req.user!.id,
+        }).catch(err => console.error('❌ Failed to send price update notification:', err));
+      });
+    }
+  } catch (error) {
+    console.error('❌ Error updating product:', error);
+    if (!res.headersSent) {
+      res.status(500).json({ 
+        success: false, 
+        message: `Failed to update product: ${error instanceof Error ? error.message : 'Unknown error'}` 
+      });
+    }
   }
-
-  const keptImages: string[] = existingImages ? JSON.parse(existingImages) : [];
-  const images = [...keptImages, ...newImageUrls];
-
-  const newPrice = price ? parseFloat(price) : Number(existing.price);
-  const priceChanged = newPrice !== Number(existing.price);
-
-  const updated = await prisma.product.update({
-    where: { id: req.params.id },
-    data: {
-      name, description, price: newPrice,
-      compareAtPrice: compareAtPrice ? parseFloat(compareAtPrice) : undefined,
-      categoryId, stock: stock ? parseInt(stock) : undefined,
-      isFeatured: isFeatured === 'true',
-      isPublished: isPublished === 'true',
-      images,
-      tags: tags ? JSON.parse(tags) : existing.tags,
-    },
-  });
-
-  // Notify on price change
-  if (priceChanged && updated.isPublished) {
-    sendPushNotificationToAll({
-      title: '🏷️ Price Update',
-      body: `${updated.name} is now $${newPrice.toFixed(2)}.`,
-      type: 'PRICE_CHANGE',
-      data: { productId: updated.id },
-      createdBy: req.user!.id,
-    }).catch(console.error);
-  }
-
-  res.json({ success: true, data: { ...updated, price: Number(updated.price) } });
 });
 
 router.delete('/products/:id', async (req: Request, res: Response) => {
@@ -376,43 +420,247 @@ router.patch('/users/:id/toggle', async (req: Request, res: Response) => {
   });
 });
 
-// GET /api/admin/orders — get all orders (paginated)
+// GET /api/admin/orders — get all orders (paginated, with filters)
 router.get('/orders', async (req: Request, res: Response) => {
-  const page = parseInt((req.query.page as string) || '1', 10);
-  const limit = parseInt((req.query.limit as string) || '20', 10);
-  const skip = (page - 1) * limit;
+  try {
+    const page = parseInt((req.query.page as string) || '1', 10);
+    const limit = parseInt((req.query.limit as string) || '20', 10);
+    const skip = (page - 1) * limit;
 
-  const [orders, total] = await Promise.all([
-    prisma.order.findMany({
-      skip,
-      take: limit,
-      include: {
-        user: {
-          select: { id: true, firstName: true, lastName: true, email: true },
+    // Build filters
+    const where: any = {};
+
+    // Status filter
+    if (req.query.status) {
+      where.status = req.query.status as string;
+    }
+
+    // Search filter (by order ID, customer name, or email)
+    if (req.query.search) {
+      const search = req.query.search as string;
+      where.OR = [
+        { id: { contains: search, mode: 'insensitive' as const } },
+        { user: { firstName: { contains: search, mode: 'insensitive' as const } } },
+        { user: { lastName: { contains: search, mode: 'insensitive' as const } } },
+        { user: { email: { contains: search, mode: 'insensitive' as const } } },
+      ];
+    }
+
+    // Amount range filters
+    if (req.query.minAmount || req.query.maxAmount) {
+      where.totalAmount = {};
+      if (req.query.minAmount) {
+        where.totalAmount.gte = req.query.minAmount as string;
+      }
+      if (req.query.maxAmount) {
+        where.totalAmount.lte = req.query.maxAmount as string;
+      }
+    }
+
+    // Date range filters
+    if (req.query.startDate || req.query.endDate) {
+      where.createdAt = {};
+      if (req.query.startDate) {
+        where.createdAt.gte = new Date(req.query.startDate as string);
+      }
+      if (req.query.endDate) {
+        const endDate = new Date(req.query.endDate as string);
+        endDate.setHours(23, 59, 59, 999);
+        where.createdAt.lte = endDate;
+      }
+    }
+
+    const [orders, total] = await Promise.all([
+      prisma.order.findMany({
+        where,
+        skip,
+        take: limit,
+        include: {
+          user: {
+            select: { id: true, firstName: true, lastName: true, email: true },
+          },
+          items: {
+            include: {
+              product: {
+                select: { id: true, name: true, price: true },
+              },
+            },
+          },
+        },
+        orderBy: { createdAt: 'desc' },
+      }),
+      prisma.order.count({ where }),
+    ]);
+
+    const formattedOrders = orders.map((order) => ({
+      ...order,
+      total: Number(order.totalAmount),
+      items: order.items.map((item) => ({
+        ...item,
+        price: Number(item.price),
+      })),
+    }));
+
+    res.json({
+      success: true,
+      data: {
+        data: formattedOrders,
+        pagination: {
+          page,
+          limit,
+          total,
+          pages: Math.ceil(total / limit),
         },
       },
-      orderBy: { createdAt: 'desc' },
-    }),
-    prisma.order.count(),
-  ]);
+    });
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch orders', error: error instanceof Error ? error.message : 'Unknown error' });
+  }
+});
 
-  const formattedOrders = orders.map((order) => ({
-    ...order,
-    total: Number(order.totalAmount),
-  }));
+// PATCH /api/admin/orders/:id/approve — approve a pending order
+router.patch('/orders/:id/approve', async (req: AuthRequest, res: Response) => {
+  try {
+    const order = await prisma.order.findUnique({
+      where: { id: req.params.id },
+      include: { user: true },
+    });
 
-  res.json({
-    success: true,
-    data: {
-      data: formattedOrders,
-      pagination: {
-        page,
-        limit,
-        total,
-        pages: Math.ceil(total / limit),
+    if (!order) {
+      res.status(404).json({ success: false, message: 'Order not found.' });
+      return;
+    }
+
+    if (order.status !== 'PENDING') {
+      res.status(400).json({ success: false, message: `Order is already ${order.status.toLowerCase()}. Cannot approve.` });
+      return;
+    }
+
+    // Update order status to CONFIRMED
+    const updatedOrder = await prisma.order.update({
+      where: { id: req.params.id },
+      data: { status: 'CONFIRMED' },
+      include: { user: true, items: { include: { product: true } } },
+    });
+
+    // Send notification to customer
+    await sendPushNotificationToUsers([order.userId], {
+      title: '✅ Pedido Aprobado',
+      body: `Tu pedido #${order.id.substring(0, 8)} ha sido aprobado y está listo para recoger en la tienda.`,
+      type: 'ORDER_UPDATE' as never,
+      data: { orderId: order.id },
+      createdBy: req.user!.id,
+    });
+
+    res.json({
+      success: true,
+      message: 'Order approved successfully and customer notified.',
+      data: {
+        ...updatedOrder,
+        totalAmount: Number(updatedOrder.totalAmount),
       },
-    },
-  });
+    });
+  } catch (err) {
+    console.error('Failed to approve order:', err);
+    res.status(500).json({ success: false, message: 'Failed to approve order.' });
+  }
+});
+
+// PATCH /api/admin/orders/:id/decline — decline a pending order
+router.patch('/orders/:id/decline', async (req: AuthRequest, res: Response) => {
+  try {
+    const order = await prisma.order.findUnique({
+      where: { id: req.params.id },
+      include: { user: true },
+    });
+
+    if (!order) {
+      res.status(404).json({ success: false, message: 'Order not found.' });
+      return;
+    }
+
+    if (order.status !== 'PENDING') {
+      res.status(400).json({ success: false, message: `Order is already ${order.status.toLowerCase()}. Cannot decline.` });
+      return;
+    }
+
+    // Update order status to CANCELLED
+    const updatedOrder = await prisma.order.update({
+      where: { id: req.params.id },
+      data: { status: 'CANCELLED' },
+      include: { user: true, items: { include: { product: true } } },
+    });
+
+    // Send notification to customer
+    await sendPushNotificationToUsers([order.userId], {
+      title: '❌ Pedido Rechazado',
+      body: `Tu pedido #${order.id.substring(0, 8)} ha sido rechazado. Contacta con la tienda para más información.`,
+      type: 'ORDER_UPDATE' as never,
+      data: { orderId: order.id },
+      createdBy: req.user!.id,
+    });
+
+    res.json({
+      success: true,
+      message: 'Order declined successfully and customer notified.',
+      data: {
+        ...updatedOrder,
+        totalAmount: Number(updatedOrder.totalAmount),
+      },
+    });
+  } catch (err) {
+    console.error('Failed to decline order:', err);
+    res.status(500).json({ success: false, message: 'Failed to decline order.' });
+  }
+});
+
+// PATCH /api/admin/orders/:id/mark-delivered — mark a confirmed order as delivered
+router.patch('/orders/:id/mark-delivered', async (req: AuthRequest, res: Response) => {
+  try {
+    const order = await prisma.order.findUnique({
+      where: { id: req.params.id },
+      include: { user: true },
+    });
+
+    if (!order) {
+      res.status(404).json({ success: false, message: 'Order not found.' });
+      return;
+    }
+
+    if (order.status !== 'CONFIRMED') {
+      res.status(400).json({ success: false, message: `Order must be CONFIRMED to mark as delivered. Current status: ${order.status}.` });
+      return;
+    }
+
+    // Update order status to DELIVERED
+    const updatedOrder = await prisma.order.update({
+      where: { id: req.params.id },
+      data: { status: 'DELIVERED' },
+      include: { user: true, items: { include: { product: true } } },
+    });
+
+    // Send notification to customer
+    await sendPushNotificationToUsers([order.userId], {
+      title: '📦 Pedido Entregado',
+      body: `Tu pedido #${order.id.substring(0, 8)} ha sido entregado. ¡Gracias por tu compra!`,
+      type: 'ORDER_UPDATE' as never,
+      data: { orderId: order.id },
+      createdBy: req.user!.id,
+    });
+
+    res.json({
+      success: true,
+      message: 'Order marked as delivered and customer notified.',
+      data: {
+        ...updatedOrder,
+        totalAmount: Number(updatedOrder.totalAmount),
+      },
+    });
+  } catch (err) {
+    console.error('Failed to mark order as delivered:', err);
+    res.status(500).json({ success: false, message: 'Failed to mark order as delivered.' });
+  }
 });
 
 export default router;

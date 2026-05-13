@@ -23,7 +23,7 @@ export default function AdminManagement() {
       setUsers(data.data.data);
       setTotal(data.data.total);
     } catch {
-      alert('Failed to load users');
+      alert('Fallo al cargar usuarios');
     } finally {
       setLoading(false);
     }
@@ -34,9 +34,9 @@ export default function AdminManagement() {
     try {
       await adminApi.changeUserRole(userId, newRole);
       await load();
-      alert(`User role changed to ${newRole}`);
+      alert(`Rol del usuario cambiado a ${newRole}`);
     } catch {
-      alert('Failed to change user role');
+      alert('Fallo al cambiar el rol del usuario');
     } finally {
       setUpdating(null);
     }
@@ -47,9 +47,9 @@ export default function AdminManagement() {
     try {
       await adminApi.toggleUserStatus(userId);
       await load();
-      alert('User status updated');
+      alert('Estado del usuario actualizado');
     } catch {
-      alert('Failed to update user status');
+      alert('Fallo al actualizar el estado del usuario');
     } finally {
       setUpdating(null);
     }
@@ -63,22 +63,22 @@ export default function AdminManagement() {
       {/* Summary */}
       <div className="grid grid-cols-2 gap-4">
         <div className="card p-5">
-          <p className="text-gray-400 text-xs font-medium uppercase tracking-wide mb-2">Total Admins</p>
+          <p className="text-gray-400 text-xs font-medium uppercase tracking-wide mb-2">Administradores Totales</p>
           <p className="text-2xl font-bold text-white">{admins.length}</p>
-          <p className="text-gray-500 text-xs mt-1">Users with admin access</p>
+          <p className="text-gray-500 text-xs mt-1">Usuarios con acceso de administrador</p>
         </div>
         <div className="card p-5">
-          <p className="text-gray-400 text-xs font-medium uppercase tracking-wide mb-2">Total Customers</p>
+          <p className="text-gray-400 text-xs font-medium uppercase tracking-wide mb-2">Clientes Totales</p>
           <p className="text-2xl font-bold text-white">{customers.length}</p>
-          <p className="text-gray-500 text-xs mt-1">Regular user accounts</p>
+          <p className="text-gray-500 text-xs mt-1">Cuentas de usuario regular</p>
         </div>
       </div>
 
-      {/* Search */}
+      {/* Búsqueda */}
       <div className="flex items-center gap-3">
         <input
           type="text"
-          placeholder="Search users by name or email…"
+          placeholder="Buscar usuarios por nombre o correo…"
           value={search}
           onChange={(e) => {
             setSearch(e.target.value);
@@ -86,19 +86,19 @@ export default function AdminManagement() {
           }}
           className="input-base flex-1"
         />
-        <span className="text-gray-500 text-sm whitespace-nowrap">{total} users</span>
+        <span className="text-gray-500 text-sm whitespace-nowrap">{total} usuarios</span>
       </div>
 
-      {/* Users Table */}
+      {/* Tabla de Usuarios */}
       <div className="card overflow-hidden">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-gray-800 text-gray-400 text-xs uppercase tracking-wide">
-              <th className="text-left px-4 py-3">User</th>
-              <th className="text-left px-4 py-3">Email</th>
-              <th className="text-center px-4 py-3">Role</th>
-              <th className="text-center px-4 py-3">Status</th>
-              <th className="text-right px-4 py-3">Actions</th>
+              <th className="text-left px-4 py-3">Usuario</th>
+              <th className="text-left px-4 py-3">Correo</th>
+              <th className="text-center px-4 py-3">Rol</th>
+              <th className="text-center px-4 py-3">Estado</th>
+              <th className="text-right px-4 py-3">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -140,7 +140,7 @@ export default function AdminManagement() {
                           user.isActive ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'
                         }`}
                       >
-                        {user.isActive ? 'Active' : 'Inactive'}
+                        {user.isActive ? 'Activo' : 'Inactivo'}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-right">
@@ -152,7 +152,7 @@ export default function AdminManagement() {
                             disabled={updating === user.id}
                             onClick={() => handleRoleChange(user.id, 'ADMIN')}
                           >
-                            {updating === user.id ? '...' : 'Make Admin'}
+                            {updating === user.id ? '...' : 'Hacer Admin'}
                           </Button>
                         ) : (
                           <Button
@@ -161,7 +161,7 @@ export default function AdminManagement() {
                             disabled={updating === user.id}
                             onClick={() => handleRoleChange(user.id, 'CUSTOMER')}
                           >
-                            {updating === user.id ? '...' : 'Demote'}
+                            {updating === user.id ? '...' : 'Degradar'}
                           </Button>
                         )}
                         <Button
@@ -171,7 +171,7 @@ export default function AdminManagement() {
                           onClick={() => handleToggleStatus(user.id)}
                           className={user.isActive ? 'text-red-400 hover:text-red-300' : 'text-green-400 hover:text-green-300'}
                         >
-                          {updating === user.id ? '...' : user.isActive ? 'Disable' : 'Enable'}
+                          {updating === user.id ? '...' : user.isActive ? 'Desactivar' : 'Activar'}
                         </Button>
                       </div>
                     </td>
@@ -183,11 +183,11 @@ export default function AdminManagement() {
         {total > limit && (
           <div className="flex items-center justify-between px-4 py-3 border-t border-gray-800">
             <span className="text-gray-500 text-xs">
-              Page {page} of {Math.ceil(total / limit)}
+              Página {page} de {Math.ceil(total / limit)}
             </span>
             <div className="flex gap-2">
               <Button size="sm" variant="ghost" disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
-                ‹ Prev
+                ‹ Anterior
               </Button>
               <Button
                 size="sm"
@@ -195,18 +195,17 @@ export default function AdminManagement() {
                 disabled={page >= Math.ceil(total / limit)}
                 onClick={() => setPage((p) => p + 1)}
               >
-                Next ›
+                Siguiente ›
               </Button>
             </div>
           </div>
         )}
       </div>
 
-      {/* Info */}
+      {/* Información */}
       <div className="card p-4 bg-blue-500/5 border border-blue-500/20">
         <p className="text-blue-300 text-sm">
-          <strong>ℹ️ How it works:</strong> All users start as customers during signup. Use this page to promote trusted
-          customers to admins. Only admins can manage products, categories, and send notifications.
+          <strong>ℹ️ Cómo funciona:</strong> Todos los usuarios comienzan como clientes durante el registro. Usa esta página para promover clientes de confianza a administradores. Solo los administradores pueden gestionar productos, categorías y enviar notificaciones.
         </p>
       </div>
     </div>

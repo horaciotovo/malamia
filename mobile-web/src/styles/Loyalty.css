@@ -1,0 +1,114 @@
+.loyalty {
+  padding: 20px;
+  background: #0A0A0A;
+  color: #FFFFFF;
+  min-height: 100vh;
+}
+
+.loyalty h1 {
+  font-size: 28px;
+  margin: 0 0 20px 0;
+  color: #FFFFFF;
+  font-weight: 700;
+}
+
+.loyalty h2 {
+  font-size: 20px;
+  margin: 24px 0 16px 0;
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+.points-card {
+  background: linear-gradient(135deg, #E8448A 0%, #C4306E 100%);
+  color: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 14px rgba(232, 68, 138, 0.45);
+}
+
+.points-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.points-label {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.points-value {
+  font-size: 48px;
+  font-weight: bold;
+}
+
+.points-info {
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.points-info p {
+  margin: 4px 0;
+  opacity: 0.95;
+}
+
+.rewards-section {
+  margin-top: 24px;
+}
+
+.rewards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reward-card {
+  border: 1px solid #2A2A2A;
+  border-radius: 8px;
+  padding: 16px;
+  background: #1A1A1A;
+  transition: all 0.2s;
+}
+
+.reward-card:hover {
+  border-color: #E8448A;
+  box-shadow: 0 4px 14px rgba(232, 68, 138, 0.3);
+}
+
+.reward-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.reward-header h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #FFFFFF;
+}
+
+.points-badge {
+  background: #E8448A;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.reward-description {
+  margin: 8px 0;
+  font-size: 14px;
+  color: #AAAAAA;
+}
+
+.reward-discount {
+  margin: 8px 0;
+  font-size: 14px;
+  color: #E8448A;
+  font-weight: 600;
+}

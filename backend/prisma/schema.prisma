@@ -133,6 +133,7 @@ enum OrderStatus {
   SHIPPED
   DELIVERED
   CANCELLED
+  EXPIRED
 }
 
 model Order {
@@ -143,6 +144,7 @@ model Order {
   status      OrderStatus @default(PENDING)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
+  pickupReminderSentAt DateTime?  // Track when pickup reminder notification was sent
 
   items               OrderItem[]
   loyaltyTransactions LoyaltyTransaction[]

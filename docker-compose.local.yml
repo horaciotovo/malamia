@@ -1,0 +1,122 @@
+version: '3.8'
+
+# docker-compose.local.yml — Local development with reverse proxy
+# For testing on iPhone/mobile devices on the same network
+# Run with: docker-compose -f docker-compose.yml -f docker-compose.local.yml up
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: malamia_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-malamia}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-malamia_secret}
+      POSTGRES_DB: ${DB_NAME:-malamia_db}
+    ports:
+      - '${DB_PORT:-5432}:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER:-malamia} -d ${DB_NAME:-malamia_db}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - malamia_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: malamia_backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: 3001
+      DATABASE_URL: postgresql://${DB_USER:-malamia}:${DB_PASSWORD:-malamia_secret}@postgres:5432/${DB_NAME:-malamia_db}?schema=public&sslmode=disable
+      JWT_SECRET: ${JWT_SECRET:-your_super_secret_jwt_key_change_this}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-your_super_secret_refresh_key}
+      JWT_EXPIRES_IN: 15m
+      JWT_REFRESH_EXPIRES_IN: 7d
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:-}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:-}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:-}
+      FIREBASE_SERVICE_ACCOUNT_PATH: ./firebase-service-account.json
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:5173,http://localhost:3000,http://localhost:8081,http://localhost:3001,https://localhost}
+    expose:
+      - 3001
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./backend/src:/app/src
+      - ./backend/prisma:/app/prisma
+    networks:
+      - malamia_network
+
+  backoffice:
+    build:
+      context: ./backoffice
+      dockerfile: Dockerfile
+    container_name: malamia_backoffice
+    restart: unless-stopped
+    environment:
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:3001/api}
+    expose:
+      - 5173
+    depends_on:
+      - backend
+    volumes:
+      - ./backoffice/src:/app/src
+      - ./backoffice/index.html:/app/index.html
+    networks:
+      - malamia_network
+
+  # ─────────────────────────────────────────────
+  # Mobile Web App (PWA)
+  # ─────────────────────────────────────────────
+  mobile-web:
+    build:
+      context: ./mobile-web
+      dockerfile: Dockerfile
+    container_name: malamia_mobile_web
+    restart: unless-stopped
+    expose:
+      - 3000
+    depends_on:
+      - backend
+    networks:
+      - malamia_network
+
+  # ─────────────────────────────────────────────
+  # Caddy Reverse Proxy (HTTPS + Routing)
+  # ─────────────────────────────────────────────
+  caddy:
+    image: caddy:2-alpine
+    container_name: malamia_caddy
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - malamia_network
+    depends_on:
+      - backend
+      - backoffice
+
+networks:
+  malamia_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+  caddy_data:
+    driver: local
+  caddy_config:
+    driver: local

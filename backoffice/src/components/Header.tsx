@@ -1,12 +1,12 @@
 import { useLocation } from 'react-router-dom';
 
 const titles: Record<string, string> = {
-  '/dashboard': 'Dashboard',
-  '/products': 'Products',
-  '/products/new': 'New Product',
-  '/customers': 'Customers',
-  '/notifications': 'Notifications',
-  '/loyalty': 'Loyalty & Ranking',
+  '/dashboard': 'Panel de Control',
+  '/products': 'Productos',
+  '/products/new': 'Nuevo Producto',
+  '/customers': 'Clientes',
+  '/notifications': 'Notificaciones',
+  '/loyalty': 'Programa de Lealtad',
 };
 
 export default function Header() {

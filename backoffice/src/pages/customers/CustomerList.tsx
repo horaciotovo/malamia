@@ -29,12 +29,12 @@ export default function CustomerList() {
         <div className="flex items-center gap-3">
           <input
             type="text"
-            placeholder="Search customers…"
+            placeholder="Buscar clientes…"
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1); }}
             className="input-base w-64"
           />
-          <span className="text-gray-500 text-sm">{total} customers</span>
+          <span className="text-gray-500 text-sm">{total} clientes</span>
         </div>
       </div>
 
@@ -42,12 +42,12 @@ export default function CustomerList() {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-gray-800 text-gray-400 text-xs uppercase tracking-wide">
-              <th className="text-left px-4 py-3">Customer</th>
-              <th className="text-left px-4 py-3">Email</th>
-              <th className="text-left px-4 py-3">Phone</th>
-              <th className="text-right px-4 py-3">Points</th>
-              <th className="text-center px-4 py-3">Status</th>
-              <th className="text-right px-4 py-3">Joined</th>
+              <th className="text-left px-4 py-3">Cliente</th>
+              <th className="text-left px-4 py-3">Correo</th>
+              <th className="text-left px-4 py-3">Teléfono</th>
+              <th className="text-right px-4 py-3">Puntos</th>
+              <th className="text-center px-4 py-3">Estado</th>
+              <th className="text-right px-4 py-3">Se unió</th>
             </tr>
           </thead>
           <tbody>
@@ -74,7 +74,7 @@ export default function CustomerList() {
                     </td>
                     <td className="px-4 py-3 text-center">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${c.isActive ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'}`}>
-                        {c.isActive ? 'Active' : 'Inactive'}
+                        {c.isActive ? 'Activo' : 'Inactivo'}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-right text-gray-500 text-xs">
@@ -87,10 +87,10 @@ export default function CustomerList() {
 
         {total > limit && (
           <div className="flex items-center justify-between px-4 py-3 border-t border-gray-800">
-            <span className="text-gray-500 text-xs">Page {page} of {Math.ceil(total / limit)}</span>
+            <span className="text-gray-500 text-xs">Página {page} de {Math.ceil(total / limit)}</span>
             <div className="flex gap-2">
-              <Button variant="ghost" size="sm" disabled={page === 1} onClick={() => setPage((p) => p - 1)}>‹ Prev</Button>
-              <Button variant="ghost" size="sm" disabled={page >= Math.ceil(total / limit)} onClick={() => setPage((p) => p + 1)}>Next ›</Button>
+              <Button variant="ghost" size="sm" disabled={page === 1} onClick={() => setPage((p) => p - 1)}>‹ Anterior</Button>
+              <Button variant="ghost" size="sm" disabled={page >= Math.ceil(total / limit)} onClick={() => setPage((p) => p + 1)}>Siguiente ›</Button>
             </div>
           </div>
         )}

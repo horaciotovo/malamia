@@ -1,0 +1,25 @@
+.app {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #000;
+}
+
+.app-container {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 60px;
+}
+
+/* Prevent bounce scroll on iOS */
+body {
+  overscroll-behavior-y: none;
+}
+
+.app-container {
+  overscroll-behavior-y: contain;
+}

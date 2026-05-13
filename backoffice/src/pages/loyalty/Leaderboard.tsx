@@ -16,10 +16,10 @@ export default function Leaderboard() {
   const medals: Record<number, string> = { 1: '🥇', 2: '🥈', 3: '🥉' };
 
   const tiers = [
-    { label: 'Diamond', min: 5000, color: 'text-primary', bg: 'bg-primary/10' },
-    { label: 'Gold', min: 2000, color: 'text-amber-400', bg: 'bg-amber-400/10' },
-    { label: 'Silver', min: 500, color: 'text-gray-300', bg: 'bg-gray-400/10' },
-    { label: 'Bronze', min: 0, color: 'text-amber-700', bg: 'bg-amber-700/10' },
+    { label: 'Diamante', min: 5000, color: 'text-primary', bg: 'bg-primary/10' },
+    { label: 'Oro', min: 2000, color: 'text-amber-400', bg: 'bg-amber-400/10' },
+    { label: 'Plata', min: 500, color: 'text-gray-300', bg: 'bg-gray-400/10' },
+    { label: 'Bronce', min: 0, color: 'text-amber-700', bg: 'bg-amber-700/10' },
   ];
 
   const getTier = (pts: number) => tiers.find((t) => pts >= t.min) ?? tiers[3];
@@ -38,16 +38,16 @@ export default function Leaderboard() {
 
       <div className="card overflow-hidden">
         <div className="px-5 py-4 border-b border-gray-800">
-          <h3 className="text-white font-semibold">Top Clients — All Time</h3>
-          <p className="text-gray-500 text-xs mt-0.5">{entries.length} ranked customers</p>
+          <h3 className="text-white font-semibold">Mejores Clientes — Todo el Tiempo</h3>
+          <p className="text-gray-500 text-xs mt-0.5">{entries.length} clientes clasificados</p>
         </div>
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-gray-800 text-gray-400 text-xs uppercase tracking-wide">
-              <th className="text-center px-4 py-3 w-16">Rank</th>
-              <th className="text-left px-4 py-3">Customer</th>
-              <th className="text-center px-4 py-3">Tier</th>
-              <th className="text-right px-4 py-3">Points</th>
+              <th className="text-center px-4 py-3 w-16">Rango</th>
+              <th className="text-left px-4 py-3">Cliente</th>
+              <th className="text-center px-4 py-3">Nivel</th>
+              <th className="text-right px-4 py-3">Puntos</th>
             </tr>
           </thead>
           <tbody>
@@ -93,8 +93,8 @@ export default function Leaderboard() {
         {entries.length === 0 && !loading && (
           <div className="text-center py-12">
             <p className="text-3xl mb-2">⭐</p>
-            <p className="text-white font-medium">No ranking data yet</p>
-            <p className="text-gray-500 text-sm mt-1">Points will appear here after customers make purchases</p>
+            <p className="text-white font-medium">Sin datos de clasificación aún</p>
+            <p className="text-gray-500 text-sm mt-1">Los puntos aparecerán aquí después de que los clientes realicen compras</p>
           </div>
         )}
       </div>

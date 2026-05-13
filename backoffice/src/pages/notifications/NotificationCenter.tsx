@@ -6,10 +6,10 @@ import Modal from '../../components/ui/Modal';
 import Input from '../../components/ui/Input';
 
 const typeOptions: { value: NotificationType; label: string; icon: string; description: string }[] = [
-  { value: 'NEW_PRODUCT', label: 'New Product', icon: '✨', description: 'Announce a new product' },
-  { value: 'PRICE_CHANGE', label: 'Price Change', icon: '🏷️', description: 'Notify about price updates' },
-  { value: 'PROMOTION', label: 'Promotion', icon: '🎁', description: 'Custom promotional message' },
-  { value: 'ORDER_UPDATE', label: 'Order Update', icon: '📦', description: 'Order status notification' },
+  { value: 'NEW_PRODUCT', label: 'Nuevo Producto', icon: '✨', description: 'Anunciar un nuevo producto' },
+  { value: 'PRICE_CHANGE', label: 'Cambio de Precio', icon: '🏷️', description: 'Notificar sobre actualizaciones de precios' },
+  { value: 'PROMOTION', label: 'Promoción', icon: '🎁', description: 'Mensaje promocional personalizado' },
+  { value: 'ORDER_UPDATE', label: 'Actualización de Pedido', icon: '📦', description: 'Notificación de estado del pedido' },
 ];
 
 export default function NotificationCenter() {
@@ -46,7 +46,7 @@ export default function NotificationCenter() {
       setNotifications(data.data.data);
     } catch (err) {
       console.error('Failed to load notifications:', err);
-      setError('Failed to load notifications. Please check if the backend is running.');
+      setError('Fallo al cargar notificaciones. Por favor verifica que el servidor está ejecutándose.');
     } finally {
       setLoading(false);
     }
@@ -59,7 +59,7 @@ export default function NotificationCenter() {
       setCustomers(data.data.data);
     } catch (err) {
       console.error('Failed to load customers:', err);
-      alert('Failed to load customers');
+      alert('Fallo al cargar clientes');
     } finally {
       setLoadingCustomers(false);
     }
@@ -69,12 +69,12 @@ export default function NotificationCenter() {
     e.preventDefault();
 
     if (!form.title.trim() || !form.body.trim()) {
-      alert('Title and message are required');
+      alert('El título y el mensaje son requeridos');
       return;
     }
 
     if (!form.targetAll && selectedUsers.size === 0) {
-      alert('Please select at least one customer');
+      alert('Por favor selecciona al menos un cliente');
       return;
     }
 
@@ -94,10 +94,10 @@ export default function NotificationCenter() {
       setForm({ title: '', body: '', type: 'PROMOTION', imageUrl: '', targetAll: true });
       setSelectedUsers(new Set());
       load();
-      alert('✅ Notification sent successfully!');
+      alert('✅ ¡Notificación enviada exitosamente!');
     } catch (err) {
       console.error('Send error:', err);
-      alert('Failed to send notification');
+      alert('Fallo al enviar la notificación');
     } finally {
       setSending(false);
     }
@@ -125,11 +125,11 @@ export default function NotificationCenter() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-white text-xl font-bold">Push Notifications</h2>
-          <p className="text-gray-500 text-sm mt-1">{notifications.length} notifications sent</p>
+          <h2 className="text-white text-xl font-bold">Notificaciones Push</h2>
+          <p className="text-gray-500 text-sm mt-1">{notifications.length} notificaciones enviadas</p>
         </div>
         <Button onClick={() => setModalOpen(true)} className="flex items-center gap-2">
-          <span>➕</span> Send Notification
+          <span>➡️</span> Enviar Notificación
         </Button>
       </div>
 
@@ -142,7 +142,7 @@ export default function NotificationCenter() {
               onClick={() => load()}
               className="mt-2 text-xs text-red-400 hover:text-red-300 underline"
             >
-              Try again
+              Intentar de nuevo
             </button>
           </div>
         )}
@@ -157,8 +157,8 @@ export default function NotificationCenter() {
           ? (
               <div className="card p-12 text-center">
                 <p className="text-6xl mb-4">🔔</p>
-                <p className="text-white font-semibold text-lg">No notifications sent yet</p>
-                <p className="text-gray-500 text-sm mt-2">Send your first push notification to all customers</p>
+                <p className="text-white font-semibold text-lg">Sin notificaciones enviadas aún</p>
+                <p className="text-gray-500 text-sm mt-2">Envía tu primera notificación push a todos los clientes</p>
               </div>
             )
           : notifications.map((n) => (
@@ -189,7 +189,7 @@ export default function NotificationCenter() {
         <form onSubmit={handleSend} className="space-y-5">
           {/* Type Selector */}
           <div>
-            <label className="text-sm font-semibold !text-white block mb-3">Notification Type</label>
+            <label className="text-sm font-semibold !text-white block mb-3">Tipo de Notificación</label>
             <div className="grid grid-cols-2 gap-2">
               {typeOptions.map((opt) => (
                 <button
@@ -225,11 +225,11 @@ export default function NotificationCenter() {
 
           {/* Message */}
           <div>
-            <label className="text-sm font-semibold !text-white block mb-2">Message *</label>
+            <label className="text-sm font-semibold !text-white block mb-2">Mensaje *</label>
             <textarea
               value={form.body}
               onChange={(e) => setForm({ ...form, body: e.target.value })}
-              placeholder="Write your push notification message…"
+              placeholder="Escribe tu mensaje de notificación push…"
               required
               className="w-full bg-surface-secondary border border-gray-700 rounded-lg px-4 py-2.5 !text-white text-sm placeholder-gray-300 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors min-h-24 resize-none"
             />
@@ -238,17 +238,17 @@ export default function NotificationCenter() {
           {/* Image URL */}
           <div>
             <Input
-              label="Image URL (optional)"
+              label="URL de Imagen (opcional)"
               value={form.imageUrl}
               onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
-              placeholder="https://example.com/image.jpg"
+              placeholder="https://ejemplo.com/imagen.jpg"
               type="url"
             />
           </div>
 
           {/* Target Selection */}
           <div className="bg-surface-secondary/50 p-4 rounded-lg space-y-3">
-            <label className="text-sm font-semibold !text-white block">Target Audience</label>
+            <label className="text-sm font-semibold !text-white block">Audiencia Objetivo</label>
             <label className="flex items-center gap-3 cursor-pointer">
               <input
                 type="radio"
@@ -261,8 +261,8 @@ export default function NotificationCenter() {
                 className="w-4 h-4 accent-primary"
               />
               <div>
-                <p className="text-white text-sm font-medium">Send to All Customers</p>
-                <p className="text-gray-500 text-xs">Push notification delivered to all users</p>
+                <p className="text-white text-sm font-medium">Enviar a Todos los Clientes</p>
+                <p className="text-gray-500 text-xs">Notificación push entregada a todos los usuarios</p>
               </div>
             </label>
 
@@ -278,8 +278,8 @@ export default function NotificationCenter() {
                 className="w-4 h-4 accent-primary"
               />
               <div>
-                <p className="text-white text-sm font-medium">Send to Specific Customers</p>
-                <p className="text-gray-500 text-xs">Select individual users below</p>
+                <p className="text-white text-sm font-medium">Enviar a Clientes Específicos</p>
+                <p className="text-gray-500 text-xs">Selecciona usuarios individuales a continuación</p>
               </div>
             </label>
           </div>
@@ -289,7 +289,7 @@ export default function NotificationCenter() {
             <div className="bg-surface-secondary/30 p-4 rounded-lg space-y-3">
               <div className="flex items-center justify-between mb-3">
                 <p className="text-gray-300 text-sm font-medium">
-                  Selected: {selectedUsers.size} customer{selectedUsers.size !== 1 ? 's' : ''}
+                  Seleccionados: {selectedUsers.size} cliente{selectedUsers.size !== 1 ? 's' : ''}
                 </p>
                 {selectedUsers.size > 0 && (
                   <button
@@ -297,18 +297,18 @@ export default function NotificationCenter() {
                     onClick={() => setSelectedUsers(new Set())}
                     className="text-xs text-gray-400 hover:text-white transition-colors"
                   >
-                    Clear all
+                    Limpiar todo
                   </button>
                 )}
               </div>
 
               {loadingCustomers ? (
                 <div className="text-center py-6">
-                  <p className="text-gray-500 text-sm">Loading customers...</p>
+                  <p className="text-gray-500 text-sm">Cargando clientes...</p>
                 </div>
               ) : customers.length === 0 ? (
                 <div className="text-center py-6">
-                  <p className="text-gray-500 text-sm">No customers found</p>
+                  <p className="text-gray-500 text-sm">Sin clientes encontrados</p>
                 </div>
               ) : (
                 <div className="max-h-64 overflow-y-auto space-y-2">
@@ -336,10 +336,10 @@ export default function NotificationCenter() {
           {/* Form Actions */}
           <div className="flex gap-3 pt-4 border-t border-gray-800">
             <Button type="button" variant="ghost" onClick={() => setModalOpen(false)}>
-              Cancel
+              Cancelar
             </Button>
             <Button type="submit" disabled={sending || (!form.targetAll && selectedUsers.size === 0)}>
-              {sending ? '⏳ Sending...' : '✈️ Send Notification'}
+              {sending ? '⏳ Enviando...' : '✏️ Enviar Notificación'}
             </Button>
           </div>
         </form>

@@ -7,6 +7,7 @@ import rateLimit from 'express-rate-limit';
 import { router } from './routes';
 import { errorHandler } from './middleware/errorHandler';
 import { prisma } from './services/prisma';
+import { startOrderStatusScheduler } from './services/orderStatusService';
 import crypto from 'crypto';
 
 const app = express();
@@ -152,6 +153,9 @@ app.use('/api', router);
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
+
+// ─── Start background schedulers ────────────
+startOrderStatusScheduler();
 
 // ─── Error handler (must be last) ───────────
 app.use(errorHandler);

@@ -2,12 +2,12 @@ import { NavLink } from 'react-router-dom';
 import { useAdminAuthStore } from '../store/authStore';
 
 const nav = [
-  { to: '/dashboard', icon: '⊞', label: 'Dashboard' },
-  { to: '/products', icon: '🛍️', label: 'Products' },
-  { to: '/customers', icon: '👥', label: 'Customers' },
-  { to: '/admin/users', icon: '🔐', label: 'Admin Users' },
-  { to: '/notifications', icon: '🔔', label: 'Notifications' },
-  { to: '/loyalty', icon: '⭐', label: 'Loyalty' },
+  { to: '/dashboard', icon: '⊞', label: 'Panel de Control' },
+  { to: '/products', icon: '🛍️', label: 'Productos' },
+  { to: '/customers', icon: '👥', label: 'Clientes' },
+  { to: '/admin/users', icon: '🔐', label: 'Usuarios Admin' },
+  { to: '/notifications', icon: '🔔', label: 'Notificaciones' },
+  { to: '/loyalty', icon: '⭐', label: 'Programa de Lealtad' },
 ];
 
 export default function Sidebar() {
@@ -23,7 +23,7 @@ export default function Sidebar() {
           </div>
           <div>
             <p className="text-white font-bold text-sm">Malamia</p>
-            <p className="text-gray-500 text-xs">Admin Panel</p>
+            <p className="text-gray-500 text-xs">Panel Admin</p>
           </div>
         </div>
       </div>

@@ -1,0 +1,40 @@
+# Global configuration
+{
+    admin off
+}
+
+# HTTP on all interfaces, port 80
+:80 {
+    # Admin panel
+    handle /admin/* {
+        uri strip_prefix /admin
+        reverse_proxy backoffice:5173
+    }
+
+    # API requests to backend
+    handle /api/* {
+        reverse_proxy backend:3001
+    }
+
+    # Everything else goes to mobile shop
+    reverse_proxy mobile-web:3000
+}
+
+# HTTPS on all interfaces, port 443 (self-signed for development)
+:443 {
+    tls internal
+
+    # Admin panel
+    handle /admin/* {
+        uri strip_prefix /admin
+        reverse_proxy backoffice:5173
+    }
+
+    # API requests to backend
+    handle /api/* {
+        reverse_proxy backend:3001
+    }
+
+    # Everything else goes to mobile shop
+    reverse_proxy mobile-web:3000
+}

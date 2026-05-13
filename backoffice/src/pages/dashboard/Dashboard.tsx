@@ -38,10 +38,10 @@ export default function Dashboard() {
   }, []);
 
   const kpis = [
-    { label: 'Total Products', value: stats?.totalProducts ?? '—', icon: '🛍️', sub: `${stats?.publishedProducts ?? 0} published` },
-    { label: 'Customers', value: stats?.totalCustomers ?? '—', icon: '👥', sub: 'Active accounts' },
-    { label: 'Total Orders', value: stats?.totalOrders ?? '—', icon: '📦', sub: 'All time' },
-    { label: 'Revenue', value: stats ? `$${stats.totalRevenue.toLocaleString('en', { minimumFractionDigits: 2 })}` : '—', icon: '💰', sub: 'Total earnings', highlight: true },
+    { label: 'Productos Totales', value: stats?.totalProducts ?? '—', icon: '🛍️', sub: `${stats?.publishedProducts ?? 0} publicados` },
+    { label: 'Clientes', value: stats?.totalCustomers ?? '—', icon: '👥', sub: 'Cuentas activas' },
+    { label: 'Pedidos Totales', value: stats?.totalOrders ?? '—', icon: '📦', sub: 'En total' },
+    { label: 'Ingresos', value: stats ? `$${stats.totalRevenue.toLocaleString('es', { minimumFractionDigits: 2 })}` : '—', icon: '💰', sub: 'Ganancias totales', highlight: true },
   ];
 
   return (
@@ -72,7 +72,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Revenue chart */}
         <div className="card p-5 lg:col-span-2">
-          <h3 className="text-white font-semibold mb-4">Monthly Revenue</h3>
+          <h3 className="text-white font-semibold mb-4">Ingresos Mensuales</h3>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={MOCK_REVENUE} barSize={24}>
               <CartesianGrid strokeDasharray="3 3" stroke="#1F2937" />
@@ -80,7 +80,7 @@ export default function Dashboard() {
               <YAxis tick={{ fill: '#6B7280', fontSize: 12 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v}`} />
               <Tooltip
                 contentStyle={{ backgroundColor: '#1F2937', border: '1px solid #374151', borderRadius: 8, color: '#fff' }}
-                formatter={(v: number) => [`$${v}`, 'Revenue']}
+                formatter={(v: number) => [`$${v}`, 'Ingresos']}
               />
               <Bar dataKey="revenue" fill="#E8448A" radius={[4, 4, 0, 0]} />
             </BarChart>
@@ -90,8 +90,8 @@ export default function Dashboard() {
         {/* Recent orders */}
         <div className="card p-5">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-white font-semibold">Recent Orders</h3>
-            <Link to="/customers" className="text-primary text-xs hover:underline">View all</Link>
+            <h3 className="text-white font-semibold">Pedidos Recientes</h3>
+            <Link to="/customers" className="text-primary text-xs hover:underline">Ver todos</Link>
           </div>
           <div className="space-y-3">
             {loading
@@ -114,7 +114,7 @@ export default function Dashboard() {
                       </span>
                     </div>
                   </div>
-                )) ?? <p className="text-gray-500 text-sm">No orders yet</p>
+                )) ?? <p className="text-gray-500 text-sm">Sin pedidos aún</p>
             }
           </div>
         </div>
@@ -122,11 +122,11 @@ export default function Dashboard() {
 
       {/* Quick actions */}
       <div className="card p-5">
-        <h3 className="text-white font-semibold mb-4">Quick Actions</h3>
+        <h3 className="text-white font-semibold mb-4">Acciones Rápidas</h3>
         <div className="flex flex-wrap gap-3">
-          <Link to="/products/new" className="btn-primary text-sm">+ Add Product</Link>
-          <Link to="/notifications" className="btn-ghost border border-gray-700 text-sm rounded-lg px-4 py-2.5">Send Notification</Link>
-          <Link to="/loyalty" className="btn-ghost border border-gray-700 text-sm rounded-lg px-4 py-2.5">View Leaderboard</Link>
+          <Link to="/products/new" className="btn-primary text-sm">+ Agregar Producto</Link>
+          <Link to="/notifications" className="btn-ghost border border-gray-700 text-sm rounded-lg px-4 py-2.5">Enviar Notificación</Link>
+          <Link to="/loyalty" className="btn-ghost border border-gray-700 text-sm rounded-lg px-4 py-2.5">Ver Clasificación</Link>
         </div>
       </div>
     </div>

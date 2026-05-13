@@ -25,8 +25,8 @@ export default function Login() {
           <div className="inline-flex w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-primary-dark items-center justify-center text-white text-2xl font-bold mb-4 shadow-pink">
             M
           </div>
-          <h1 className="text-white text-2xl font-bold">Malamia Admin</h1>
-          <p className="text-gray-500 text-sm mt-1">Sign in to your admin account</p>
+          <h1 className="text-white text-2xl font-bold">Panel Admin Malamia</h1>
+          <p className="text-gray-500 text-sm mt-1">Inicia sesión en tu cuenta de administrador</p>
         </div>
 
         <form onSubmit={handleSubmit} className="card p-6 space-y-4">
@@ -37,7 +37,7 @@ export default function Login() {
           )}
 
           <div className="space-y-1.5">
-            <label className="text-sm font-medium text-gray-300">Email</label>
+            <label className="text-sm font-medium text-gray-300">Correo Electrónico</label>
             <input
               type="email"
               value={email}
@@ -50,7 +50,7 @@ export default function Login() {
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-sm font-medium text-gray-300">Password</label>
+            <label className="text-sm font-medium text-gray-300">Contraseña</label>
             <input
               type="password"
               value={password}
@@ -62,7 +62,7 @@ export default function Login() {
           </div>
 
           <button type="submit" disabled={isLoading} className="btn-primary w-full mt-2">
-            {isLoading ? 'Signing in…' : 'Sign In'}
+            {isLoading ? 'Iniciando sesión…' : 'Inicia Sesión'}
           </button>
         </form>
       </div>

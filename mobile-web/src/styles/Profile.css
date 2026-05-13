@@ -1,0 +1,167 @@
+.profile {
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  background: #0A0A0A;
+  color: #FFFFFF;
+  min-height: 100vh;
+}
+
+.profile h1 {
+  font-size: 28px;
+  margin: 0 0 20px 0;
+  color: #FFFFFF;
+  font-weight: 700;
+}
+
+.profile-card {
+  display: flex;
+  gap: 16px;
+  padding: 20px;
+  background: #1A1A1A;
+  border: 1px solid #2A2A2A;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  align-items: flex-start;
+}
+
+.profile-avatar {
+  flex-shrink: 0;
+}
+
+.profile-avatar img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar-placeholder {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #E8448A 0%, #C4306E 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.profile-info h2 {
+  margin: 0 0 4px 0;
+  font-size: 20px;
+  color: #FFFFFF;
+}
+
+.profile-info .email {
+  margin: 0;
+  font-size: 14px;
+  color: #E8448A;
+  font-weight: 500;
+}
+
+.profile-info .phone {
+  margin: 4px 0 0 0;
+  font-size: 14px;
+  color: #AAAAAA;
+}
+
+.loyalty-summary {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.loyalty-item {
+  flex: 1;
+  padding: 16px;
+  background: #252525;
+  border: 1px solid #2A2A2A;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.loyalty-item .label {
+  display: block;
+  font-size: 12px;
+  color: #AAAAAA;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.loyalty-item .value {
+  display: block;
+  font-size: 24px;
+  font-weight: bold;
+  color: #E8448A;
+}
+
+.profile-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.profile-section {
+  padding: 16px;
+  background: #1A1A1A;
+  border: 1px solid #2A2A2A;
+  border-radius: 8px;
+}
+
+.profile-section h3 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  color: #FFFFFF;
+  font-weight: 600;
+  border-bottom: 2px solid #2A2A2A;
+  padding-bottom: 12px;
+}
+
+.section-button {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 8px;
+  background: #252525;
+  border: 1px solid #2A2A2A;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #FFFFFF;
+  text-align: left;
+  transition: all 0.2s;
+}
+
+.section-button:last-child {
+  margin-bottom: 0;
+}
+
+.section-button:hover {
+  border-color: #E8448A;
+  color: #E8448A;
+}
+
+.logout-button {
+  width: 100%;
+  padding: 12px;
+  background: #FF4458;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  transition: background 0.2s;
+}
+
+.logout-button:hover {
+  background: #E63946;
+}

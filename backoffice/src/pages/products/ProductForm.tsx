@@ -70,10 +70,10 @@ export default function ProductForm() {
 
   const validate = () => {
     const e: typeof errors = {};
-    if (!form.name.trim()) e.name = 'Name is required.';
-    if (!form.price || isNaN(Number(form.price))) e.price = 'Valid price required.';
-    if (!form.categoryId) e.categoryId = 'Category is required.';
-    if (!form.stock || isNaN(Number(form.stock))) e.stock = 'Valid stock required.';
+    if (!form.name.trim()) e.name = 'El nombre es obligatorio.';
+    if (!form.price || isNaN(Number(form.price))) e.price = 'Se requiere un precio válido.';
+    if (!form.categoryId) e.categoryId = 'La categoría es obligatoria.';
+    if (!form.stock || isNaN(Number(form.stock))) e.stock = 'Se requiere un stock válido.';
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -103,7 +103,7 @@ export default function ProductForm() {
       }
       navigate('/products');
     } catch {
-      alert('Failed to save product. Please try again.');
+      alert('Error al guardar el producto. Por favor intenta de nuevo.');
     } finally {
       setLoading(false);
     }
@@ -113,14 +113,14 @@ export default function ProductForm() {
     <form onSubmit={handleSubmit} className="max-w-3xl space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-white font-semibold text-lg">{isEdit ? 'Edit Product' : 'New Product'}</h2>
+          <h2 className="text-white font-semibold text-lg">{isEdit ? 'Editar Producto' : 'Nuevo Producto'}</h2>
           <p className="text-gray-500 text-sm mt-0.5">
-            {isEdit ? 'A price change notification will be sent automatically.' : 'A push notification is sent when published.'}
+            {isEdit ? 'Una notificación de cambio de precio se enviará automáticamente.' : 'Se envía una notificación push cuando se publica.'}
           </p>
         </div>
         <div className="flex gap-3">
-          <Button type="button" variant="ghost" onClick={() => navigate('/products')}>Cancel</Button>
-          <Button type="submit" loading={loading}>{isEdit ? 'Save Changes' : 'Create Product'}</Button>
+          <Button type="button" variant="ghost" onClick={() => navigate('/products')}>Cancelar</Button>
+          <Button type="submit" loading={loading}>{isEdit ? 'Guardar Cambios' : 'Crear Producto'}</Button>
         </div>
       </div>
 
@@ -128,23 +128,23 @@ export default function ProductForm() {
         {/* Main info */}
         <div className="lg:col-span-2 space-y-4">
           <div className="card p-5 space-y-4">
-            <h3 className="text-white font-medium text-sm">Product Info</h3>
-            <Input label="Product name *" value={form.name} onChange={(e) => set('name', e.target.value)} error={errors.name} placeholder="e.g. Rose Glow Serum" />
-            <Textarea label="Description" value={form.description} onChange={(e) => set('description', e.target.value)} placeholder="Describe your product…" />
+            <h3 className="text-white font-medium text-sm">Información del Producto</h3>
+            <Input label="Nombre del producto *" value={form.name} onChange={(e) => set('name', e.target.value)} error={errors.name} placeholder="p.ej. Suero Rose Glow" />
+            <Textarea label="Descripción" value={form.description} onChange={(e) => set('description', e.target.value)} placeholder="Describe tu producto…" />
           </div>
 
           {/* Pricing */}
           <div className="card p-5 space-y-4">
-            <h3 className="text-white font-medium text-sm">Pricing</h3>
+            <h3 className="text-white font-medium text-sm">Precio</h3>
             <div className="grid grid-cols-2 gap-4">
-              <Input label="Price ($) *" type="number" step="0.01" min="0" value={form.price} onChange={(e) => set('price', e.target.value)} error={errors.price} placeholder="0.00" />
-              <Input label="Compare at price ($)" type="number" step="0.01" min="0" value={form.compareAtPrice} onChange={(e) => set('compareAtPrice', e.target.value)} hint="Original price (for displaying discounts)" placeholder="0.00" />
+              <Input label="Precio ($) *" type="number" step="0.01" min="0" value={form.price} onChange={(e) => set('price', e.target.value)} error={errors.price} placeholder="0.00" />
+              <Input label="Precio de comparación ($)" type="number" step="0.01" min="0" value={form.compareAtPrice} onChange={(e) => set('compareAtPrice', e.target.value)} hint="Precio original (para mostrar descuentos)" placeholder="0.00" />
             </div>
           </div>
 
           {/* Images */}
           <div className="card p-5 space-y-4">
-            <h3 className="text-white font-medium text-sm">Images</h3>
+            <h3 className="text-white font-medium text-sm">Imágenes</h3>
             <div
               {...getRootProps()}
               className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${
@@ -153,9 +153,9 @@ export default function ProductForm() {
             >
               <input {...getInputProps()} />
               <p className="text-gray-400 text-sm">
-                {isDragActive ? 'Drop images here…' : 'Drag & drop images or click to browse'}
+                {isDragActive ? 'Suelta las imágenes aquí…' : 'Arrastra y suelta imágenes o haz clic para examinar'}
               </p>
-              <p className="text-gray-600 text-xs mt-1">JPEG, PNG, WebP — max 8 MB each</p>
+              <p className="text-gray-600 text-xs mt-1">JPEG, PNG, WebP — máx 8 MB cada una</p>
             </div>
 
             {(existingImages.length > 0 || previews.length > 0) && (
@@ -200,27 +200,27 @@ export default function ProductForm() {
         {/* Sidebar */}
         <div className="space-y-4">
           <div className="card p-5 space-y-4">
-            <h3 className="text-white font-medium text-sm">Organization</h3>
+            <h3 className="text-white font-medium text-sm">Organización</h3>
             <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-medium text-gray-300">Category *</label>
+              <label className="text-sm font-medium text-gray-300">Categoría *</label>
               <select
                 value={form.categoryId}
                 onChange={(e) => set('categoryId', e.target.value)}
                 className="input-base"
               >
-                <option value="">— Select —</option>
+                <option value="">— Seleccionar —</option>
                 {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
               {errors.categoryId && <p className="text-xs text-red-400">{errors.categoryId}</p>}
             </div>
             <Input label="Stock" type="number" min="0" value={form.stock} onChange={(e) => set('stock', e.target.value)} error={errors.stock} />
-            <Input label="Tags (comma separated)" value={form.tags} onChange={(e) => set('tags', e.target.value)} placeholder="skincare, glow, new" />
+            <Input label="Etiquetas (separadas por comas)" value={form.tags} onChange={(e) => set('tags', e.target.value)} placeholder="skincare, brillo, nuevo" />
           </div>
 
           <div className="card p-5 space-y-3">
-            <h3 className="text-white font-medium text-sm">Visibility</h3>
+            <h3 className="text-white font-medium text-sm">Visibilidad</h3>
             <label className="flex items-center justify-between cursor-pointer">
-              <span className="text-sm text-gray-300">Published</span>
+              <span className="text-sm text-gray-300">Publicado</span>
               <button
                 type="button"
                 onClick={() => set('isPublished', !form.isPublished)}
@@ -230,7 +230,7 @@ export default function ProductForm() {
               </button>
             </label>
             <label className="flex items-center justify-between cursor-pointer">
-              <span className="text-sm text-gray-300">Featured</span>
+              <span className="text-sm text-gray-300">Destacado</span>
               <button
                 type="button"
                 onClick={() => set('isFeatured', !form.isFeatured)}

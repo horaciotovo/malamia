@@ -32,7 +32,7 @@ export default function ProductList() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Delete this product? This cannot be undone.')) return;
+    if (!confirm('¿Eliminar este producto? Esta acción no se puede deshacer.')) return;
     await productsApi.delete(id);
     setProducts((prev) => prev.filter((p) => p.id !== id));
   };
@@ -44,7 +44,7 @@ export default function ProductList() {
         <div className="flex items-center gap-3">
           <input
             type="text"
-            placeholder="Search products…"
+            placeholder="Buscar productos…"
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1); }}
             className="input-base w-64"
@@ -52,7 +52,7 @@ export default function ProductList() {
           <span className="text-gray-500 text-sm">{total} total</span>
         </div>
         <Link to="/products/new">
-          <Button>+ New Product</Button>
+          <Button>+ Nuevo Producto</Button>
         </Link>
       </div>
 
@@ -61,12 +61,12 @@ export default function ProductList() {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-gray-800 text-gray-400 text-xs uppercase tracking-wide">
-              <th className="text-left px-4 py-3">Product</th>
-              <th className="text-left px-4 py-3">Category</th>
-              <th className="text-right px-4 py-3">Price</th>
+              <th className="text-left px-4 py-3">Producto</th>
+              <th className="text-left px-4 py-3">Categoría</th>
+              <th className="text-right px-4 py-3">Precio</th>
               <th className="text-right px-4 py-3">Stock</th>
-              <th className="text-center px-4 py-3">Status</th>
-              <th className="text-right px-4 py-3">Actions</th>
+              <th className="text-center px-4 py-3">Estado</th>
+              <th className="text-right px-4 py-3">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -95,7 +95,7 @@ export default function ProductList() {
                         <div>
                           <p className="text-white font-medium">{product.name}</p>
                           {product.isFeatured && (
-                            <span className="badge-pink">Featured</span>
+                            <span className="badge-pink">Destacado</span>
                           )}
                         </div>
                       </div>
@@ -123,7 +123,7 @@ export default function ProductList() {
                             : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
                         }`}
                       >
-                        {product.isPublished ? 'Published' : 'Draft'}
+                        {product.isPublished ? 'Publicado' : 'Borrador'}
                       </button>
                     </td>
                     <td className="px-4 py-3 text-right">
@@ -132,13 +132,13 @@ export default function ProductList() {
                           to={`/products/${product.id}/edit`}
                           className="text-gray-400 hover:text-white transition-colors text-xs"
                         >
-                          Edit
+                          Editar
                         </Link>
                         <button
                           onClick={() => handleDelete(product.id)}
                           className="text-gray-600 hover:text-red-400 transition-colors text-xs"
                         >
-                          Delete
+                          Eliminar
                         </button>
                       </div>
                     </td>
@@ -150,10 +150,10 @@ export default function ProductList() {
         {/* Pagination */}
         {total > limit && (
           <div className="flex items-center justify-between px-4 py-3 border-t border-gray-800">
-            <span className="text-gray-500 text-xs">Page {page} of {Math.ceil(total / limit)}</span>
+            <span className="text-gray-500 text-xs">Página {page} de {Math.ceil(total / limit)}</span>
             <div className="flex gap-2">
-              <Button variant="ghost" size="sm" disabled={page === 1} onClick={() => setPage((p) => p - 1)}>‹ Prev</Button>
-              <Button variant="ghost" size="sm" disabled={page >= Math.ceil(total / limit)} onClick={() => setPage((p) => p + 1)}>Next ›</Button>
+              <Button variant="ghost" size="sm" disabled={page === 1} onClick={() => setPage((p) => p - 1)}>‹ Anterior</Button>
+              <Button variant="ghost" size="sm" disabled={page >= Math.ceil(total / limit)} onClick={() => setPage((p) => p + 1)}>Siguiente ›</Button>
             </div>
           </div>
         )}

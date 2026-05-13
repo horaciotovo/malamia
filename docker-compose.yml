@@ -39,9 +39,9 @@ services:
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-your_super_secret_refresh_key}
       JWT_EXPIRES_IN: 15m
       JWT_REFRESH_EXPIRES_IN: 7d
-      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:-}
-      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:-}
-      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:-}
+      CLOUDINARY_CLOUD_NAME: dxatjmgxf
+      CLOUDINARY_API_KEY: 422875996967341
+      CLOUDINARY_API_SECRET: _C0FcJG0jTSA9T6-uxwgVM6Ea2g
       FIREBASE_SERVICE_ACCOUNT_PATH: ./firebase-service-account.json
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:5173,http://localhost:3000,http://localhost:8081}
       POINTS_PER_PURCHASE_DOLLAR: 1
@@ -74,6 +74,27 @@ services:
     volumes:
       - ./backoffice/src:/app/src
       - ./backoffice/index.html:/app/index.html
+    networks:
+      - malamia_network
+
+  # ─────────────────────────────────────
+  # Vite Mobile Web (React PWA)
+  # ─────────────────────────────────────
+  mobile-web:
+    build:
+      context: ./mobile-web
+      dockerfile: Dockerfile
+    container_name: malamia_mobile_web
+    restart: unless-stopped
+    environment:
+      VITE_API_URL: ${VITE_API_URL:-http://backend:3001/api}
+    ports:
+      - '3000:3000'
+    depends_on:
+      - backend
+    volumes:
+      - ./mobile-web/src:/app/src
+      - ./mobile-web/index.html:/app/index.html
     networks:
       - malamia_network
 

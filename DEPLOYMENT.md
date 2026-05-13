@@ -2,6 +2,22 @@
 
 This guide will help you deploy and run the entire Malamia application stack with minimal setup.
 
+---
+
+## 📱 **NEW: Local iPhone Access**
+
+Want to test the app on your iPhone over your local network? 
+
+⭐ **[See LOCAL_DEPLOYMENT.md](./LOCAL_DEPLOYMENT.md)** for complete setup instructions including:
+- Automatic IP detection
+- Caddy reverse proxy setup
+- iPhone Safari access
+- One-command startup
+
+**Quick start:** `.\start-local-dev.ps1` (Windows) or `./start-local-dev.sh` (Mac/Linux)
+
+---
+
 ## Quick Start (2 minutes)
 
 ### Option 1: Docker Compose (Recommended) 🐳
